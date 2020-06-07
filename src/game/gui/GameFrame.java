@@ -1,6 +1,7 @@
 package game.gui;
 
 import game.basement.Location;
+import game.element.Bomb;
 import game.gamedata.GameConstant;
 import game.gamedata.GameData;
 
@@ -62,9 +63,32 @@ public class GameFrame extends JFrame {
                                 GameData.players.get(0).getPlayerLocation().getY() + yChange));
                     }
                 }
+                else if(e.getKeyCode()==KeyEvent.VK_UP||e.getKeyCode()==KeyEvent.VK_DOWN||e.getKeyCode()==KeyEvent.VK_LEFT||e.getKeyCode()==KeyEvent.VK_RIGHT){
+                    int xChange = 0, yChange = 0;
 
+                    if(GameData.players.get(0).getPlayerLocation().getY()!=0&&e.getKeyCode()==KeyEvent.VK_UP){
+                        yChange = -1;
+                    }else if(GameData.players.get(0).getPlayerLocation().getY()!= GameConstant.SQUARE_AMOUNT-1
+                            &&e.getKeyCode()==KeyEvent.VK_DOWN){
+                        yChange = 1;
+                    }else if(GameData.players.get(0).getPlayerLocation().getX()!=0&&e.getKeyCode()==KeyEvent.VK_LEFT){
+                        xChange = -1;
+                    }else if(GameData.players.get(0).getPlayerLocation().getX()!=GameConstant.SQUARE_AMOUNT-1
+                            &&e.getKeyCode()==KeyEvent.VK_RIGHT){
+                        xChange = 1;
+                    }
 
+                    boolean isValid = (xChange!=0||yChange!=0)&&
+                            board.getSquare()[GameData.players.get(0).getPlayerLocation().getX() + xChange]
+                                    [GameData.players.get(0).getPlayerLocation().getY() + yChange].getElement()==0;
+                    if(isValid) {
+                        board.getSquare()[GameData.players.get(0).getPlayerLocation().getX() + xChange]
+                                [GameData.players.get(0).getPlayerLocation().getY() + yChange].setBomb(new Bomb(1,1,1));
+                        board.getSquare()[GameData.players.get(0).getPlayerLocation().getX() + xChange]
+                                [GameData.players.get(0).getPlayerLocation().getY() + yChange].repaint();
 
+                    }
+                }
             }
         });
         requestFocus();

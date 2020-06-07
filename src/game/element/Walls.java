@@ -3,6 +3,7 @@ package game.element;
 import game.basement.Location;
 import game.gamedata.GameConstant;
 import game.gamedata.GameData;
+import game.image.ImageReader;
 
 import javax.swing.*;
 import java.awt.*;
@@ -18,14 +19,13 @@ import java.awt.geom.Ellipse2D;
  */
 public class Walls extends JComponent {
 
-    private boolean unBreak;
-    private Color color;
+    private boolean canBreak;
 
-    public Walls(boolean unBreak) {
-        this.unBreak = unBreak;
+    public Walls(boolean canBreak) {
+        this.canBreak = canBreak;
         setLayout(null);
         setSize(GameConstant.SQUARE_SIZE,GameConstant.SQUARE_SIZE);
-        color = new Color(3, 171, 14);
+
     }
 
     @Override
@@ -35,24 +35,22 @@ public class Walls extends JComponent {
     }
 
     private void paintWall(Graphics g){
-        ((Graphics2D) g).setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);//抗锯齿
+        if(canBreak){
+            g.drawImage(ImageReader.BREAK[(int)(Math.random()*ImageReader.BREAK.length)].getImage(), 0, 0, null);
+        }else{
+            g.drawImage(ImageReader.UN_BREAK[(int)(Math.random()*ImageReader.UN_BREAK.length)].getImage(), 0, 0, null);
+        }
 
-
-
-            int spacing = (int) (GameConstant.SQUARE_SIZE * 0.05);
-            RadialGradientPaint tempPaint = new RadialGradientPaint(spacing,spacing, (float) Math.max(GameConstant.SQUARE_SIZE - 2 * spacing,0.01),new float[]{0.0f,1.0f},
-                    new Color[]{Color.WHITE,color});
-            ((Graphics2D) g).setPaint(tempPaint);
-            ((Graphics2D) g).fill(new Ellipse2D.Double(spacing, spacing, GameConstant.SQUARE_SIZE - 2 * spacing, GameConstant.SQUARE_SIZE - 2 * spacing));
-
-    //    g.drawImage(GameConstant.WALL_IMAGE, 0, 0, (img, infoflags, x, y, width, height) -> false);
-    }
-    public boolean isUnBreak() {
-        return unBreak;
     }
 
-    public void setUnBreak(boolean unBreak) {
-        this.unBreak = unBreak;
+
+
+    public boolean isCanBreak() {
+        return canBreak;
+    }
+
+    public void setCanBreak(boolean unBreak) {
+        this.canBreak = unBreak;
     }
 
 

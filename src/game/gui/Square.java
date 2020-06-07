@@ -84,6 +84,7 @@ public class Square extends JPanel {
     }
 
     public void setBomb(Bomb bomb) {
+        removeAllElement();
         this.bomb = bomb;
         this.walls = null;
         this.player = null;
@@ -96,6 +97,7 @@ public class Square extends JPanel {
     }
 
     public void setWalls(Walls walls) {
+        removeAllElement();
         this.walls = walls;
         this.bomb = null;
         this.player = null;
@@ -108,6 +110,7 @@ public class Square extends JPanel {
     }
 
     public void setPlayer(Player player) {
+        removeAllElement();
         this.player = player;
         this.walls = null;
         this.bomb = null;

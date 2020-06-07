@@ -7,6 +7,7 @@ import game.element.Walls;
 import game.gamedata.GameData;
 import game.gui.Board;
 import game.gui.GameFrame;
+import game.image.ImageReader;
 
 /**
  * 主程序

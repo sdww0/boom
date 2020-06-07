@@ -1,5 +1,7 @@
 package game.gamedata;
 
+import org.omg.CORBA.PUBLIC_MEMBER;
+
 /**
  *
  * 游戏数据库
@@ -14,6 +16,8 @@ public class GameData {
     private static int[][] map = {
 
     };
+
+
 
 
     public static int[][] getMap() {

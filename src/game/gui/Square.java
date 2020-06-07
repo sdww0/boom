@@ -4,6 +4,7 @@ import game.basement.Location;
 import game.element.Bomb;
 import game.element.Player;
 import game.element.Walls;
+import game.gamedata.GameConstant;
 
 import javax.swing.*;
 import java.awt.*;
@@ -24,38 +25,60 @@ public class Square extends JPanel {
     private Location squareLocation;
     private Color color;
 
-    public Square(Bomb bomb , Location squareLocation, Color color) {
-        this.bomb = bomb;
-        this.squareLocation = squareLocation;
-        this.color = color;
-        this.walls = null;
-        this.player = null;
-    }
-
-    public Square(Walls walls, Location squareLocation, Color color) {
-        this.walls = walls;
-        this.squareLocation = squareLocation;
-        this.color = color;
-        this.bomb = null;
-        this.player = null;
-    }
-
-    public Square(Player player, Location squareLocation, Color color) {
-        this.player = player;
-        this.squareLocation = squareLocation;
-        this.color = color;
-        this.walls = null;
-        this.bomb = null;
-    }
-
-    public Square( Location squareLocation, Color color) {
+    public Square(Location squareLocation, Color color) {
         this.squareLocation = squareLocation;
         this.color = color;
         this.player = null;
         this.walls = null;
         this.bomb = null;
+        setLayout(new GridLayout(1, 1));
+        setSize(GameConstant.SQUARE_SIZE,GameConstant.SQUARE_SIZE);
     }
 
+    @Override
+    protected void paintComponent(Graphics g) {//画出原件位置的图像
+        super.paintComponent(g);
+        paintSquare(g);
+    }
+
+    private void paintSquare(Graphics g) {
+        g.setColor(color);
+        g.fillRect(0, 0, getWidth() - 1, getHeight() - 1);
+
+    }
+
+    /**
+     *
+     * @return 含有的元素类型
+     * 0 代表无元素
+     * 1 代表 墙壁
+     * 2 代表 炸弹
+     * 3 代表 玩家
+     */
+    public int getElement(){
+        if(player!=null){
+            return 3;
+        }else if(bomb!=null){
+            return 2;
+        }else if(walls!=null){
+            return 1;
+        }else {
+            return 0;
+        }
+    }
+
+
+    public void removeAllElement(){
+        player = null;
+        bomb = null;
+        walls = null;
+        removeAll();
+    }
+
+
+    /**
+     *getter and setter
+     */
     public Bomb getBomb() {
         return bomb;
     }
@@ -64,6 +87,8 @@ public class Square extends JPanel {
         this.bomb = bomb;
         this.walls = null;
         this.player = null;
+        add(bomb);
+        repaint();
     }
 
     public Walls getWalls() {
@@ -74,6 +99,8 @@ public class Square extends JPanel {
         this.walls = walls;
         this.bomb = null;
         this.player = null;
+        add(walls);
+        repaint();
     }
 
     public Player getPlayer() {
@@ -84,6 +111,8 @@ public class Square extends JPanel {
         this.player = player;
         this.walls = null;
         this.bomb = null;
+        add(player);
+        repaint();
     }
 
     public Location getSquareLocation() {

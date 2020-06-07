@@ -21,9 +21,10 @@ public class Board extends JComponent {
         for(int n =0;n<GameConstant.SQUARE_AMOUNT;n++){
             for(int i =0;i<GameConstant.SQUARE_AMOUNT;i++){
                 square[n][i] = new Square(new Location(n,i), GameConstant.BOARD_COLOR1);
+                square[n][i].setLocation(n * GameConstant.SQUARE_SIZE, i * GameConstant.SQUARE_SIZE);
+                add(square[n][i]);
             }
         }
-
     }
 
     public Square[][] getSquare() {

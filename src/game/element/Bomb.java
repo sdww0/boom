@@ -27,8 +27,6 @@ public class Bomb extends JComponent {
     private int damage;
     private int time;
 
-
-
     public Bomb(int radius, int damage, int time) {
         setLayout(null);
         setSize(GameConstant.SQUARE_SIZE,GameConstant.SQUARE_SIZE);

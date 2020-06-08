@@ -5,6 +5,7 @@ import game.element.Bomb;
 import game.gamedata.GameConstant;
 import game.gamedata.GameData;
 import game.image.ImageReader;
+import game.thread.BombControlThread;
 
 import javax.swing.*;
 import java.awt.event.KeyAdapter;
@@ -62,7 +63,7 @@ public class GameFrame extends JFrame {
                         board.getSquare()[GameData.players.get(0).getPlayerLocation().getX()]
                                 [GameData.players.get(0).getPlayerLocation().getY()].removeAllElement();
                         board.getSquare()[GameData.players.get(0).getPlayerLocation().getX() + xChange]
-                                [GameData.players.get(0).getPlayerLocation().getY() + yChange].setPlayer(GameData.players.get(0));
+                                [GameData.players.get(0).getPlayerLocation().getY() + yChange].setElement(GameData.players.get(0));
                         board.getSquare()[GameData.players.get(0).getPlayerLocation().getX()]
                                 [GameData.players.get(0).getPlayerLocation().getY()].repaint();
                         board.getSquare()[GameData.players.get(0).getPlayerLocation().getX() + xChange]
@@ -108,14 +109,16 @@ public class GameFrame extends JFrame {
                         GameData.players.get(0).getBombs().remove(place);
                         GameData.players.get(0).getBombs().add(place,GameData.players.get(0).getBomb());
                         board.getSquare()[GameData.players.get(0).getPlayerLocation().getX() + xChange]
-                                [GameData.players.get(0).getPlayerLocation().getY() + yChange].setBomb(GameData.players.get(0).getBomb());
+                                [GameData.players.get(0).getPlayerLocation().getY() + yChange].setElement(GameData.players.get(0).getBomb());
+
+                        GameData.getBombControlPool().submit(new BombControlThread(GameData.players.get(0).getBomb(),
+                                new Location(GameData.players.get(0).getPlayerLocation().getX() + xChange
+                                        ,GameData.players.get(0).getPlayerLocation().getY() + yChange)));
                         board.getSquare()[GameData.players.get(0).getPlayerLocation().getX() + xChange]
                                 [GameData.players.get(0).getPlayerLocation().getY() + yChange].repaint();
 
                     }
                 }
-
-
             }
         });
 

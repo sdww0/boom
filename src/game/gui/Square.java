@@ -1,5 +1,6 @@
 package game.gui;
 
+import com.sun.istack.internal.NotNull;
 import game.basement.Location;
 import game.element.Bomb;
 import game.element.Player;
@@ -16,11 +17,8 @@ import java.awt.*;
 public class Square extends JPanel {
     /**
      * 棋盘上含有什么元素（炸弹？墙壁？玩家？）
-     * 三个量只能有一个存在，当一个存在时，设其他为null
      */
-    private Bomb bomb;
-    private Walls walls;
-    private Player player;
+    private Object element;
 
     private Location squareLocation;
     private Color color;
@@ -28,9 +26,7 @@ public class Square extends JPanel {
     public Square(Location squareLocation, Color color) {
         this.squareLocation = squareLocation;
         this.color = color;
-        this.player = null;
-        this.walls = null;
-        this.bomb = null;
+        this.element = null;
         setLayout(new GridLayout(1, 1));
         setSize(GameConstant.SQUARE_SIZE,GameConstant.SQUARE_SIZE);
     }
@@ -56,65 +52,36 @@ public class Square extends JPanel {
      * 3 代表 玩家
      */
     public int getElement(){
-        if(player!=null){
-            return 3;
-        }else if(bomb!=null){
-            return 2;
-        }else if(walls!=null){
-            return 1;
-        }else {
+        if(this.element==null){
             return 0;
+        }
+        switch (this.element.getClass().getName()) {
+            case "game.element.Player":
+                return 3;
+            case "game.element.Bomb":
+                return 2;
+            case "game.element.Walls":
+                return 1;
+            default:
+                return 0;
         }
     }
 
 
     public void removeAllElement(){
-        player = null;
-        bomb = null;
-        walls = null;
+        this.element = null;
         removeAll();
+        repaint();
     }
 
 
     /**
      *getter and setter
      */
-    public Bomb getBomb() {
-        return bomb;
-    }
-
-    public void setBomb(Bomb bomb) {
-        removeAllElement();
-        this.bomb = bomb;
-        this.walls = null;
-        this.player = null;
-        add(bomb);
-        repaint();
-    }
-
-    public Walls getWalls() {
-        return walls;
-    }
-
-    public void setWalls(Walls walls) {
-        removeAllElement();
-        this.walls = walls;
-        this.bomb = null;
-        this.player = null;
-        add(walls);
-        repaint();
-    }
-
-    public Player getPlayer() {
-        return player;
-    }
-
-    public void setPlayer(Player player) {
-        removeAllElement();
-        this.player = player;
-        this.walls = null;
-        this.bomb = null;
-        add(player);
+    public void setElement(Object element) {
+        removeAll();
+        this.element = element;
+        add((Component) element);
         repaint();
     }
 

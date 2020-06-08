@@ -1,5 +1,7 @@
 package game.gamedata;
 
+import game.element.Boom;
+
 import java.awt.*;
 
 /**

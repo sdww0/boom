@@ -54,6 +54,7 @@ public class ImageReader {
     public static final ImageIcon[] BREAK = {BUILDING[0],BUILDING[1],BUILDING[2],FLOWER[0],FLOWER[1],FLOWER[2],FLOWER[3]};
     public static final ImageIcon[] UN_BREAK = {TREE[0],TREE[1],TREE[2]};
     public static final ImageIcon BOMB = new ImageIcon(ImageReader.class.getResource("/game/image/bomb.png"));
+    public static final ImageIcon BOOM = new ImageIcon(ImageReader.class.getResource("/game/image/boom.png"));
 
 
     public static boolean isBreakable(ImageIcon imageIcon){

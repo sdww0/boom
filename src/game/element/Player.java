@@ -1,11 +1,14 @@
 package game.element;
 
+import com.sun.corba.se.impl.orbutil.graph.Graph;
 import game.basement.Location;
 import game.gamedata.GameConstant;
+import game.image.ImageReader;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.Ellipse2D;
+import java.util.ArrayList;
 
 /**
  * 玩家元素
@@ -18,52 +21,55 @@ import java.awt.geom.Ellipse2D;
  * @author njdnhh
  */
 public class Player extends JComponent {
-
+    /**
+     * 玩家位置
+     * 放置的炸弹列表（如果可以放置，则对应位置为null，不可放置则有炸弹）
+     * 玩家放置的炸弹属性
+     * 玩家的生命值
+     * 测试用颜色
+     */
     private Location playerLocation;
+    private ArrayList<Bomb> bombs;
     private Bomb bomb;
     private float life;
-    private Color color;
+    private ImageIcon currentImageIcon;
 
     public Player(Location playerLocation, Bomb bomb, float life) {
         this.playerLocation = playerLocation;
+        this.bombs = new ArrayList<Bomb>();
+        this.bombs.add(null);
         this.bomb = bomb;
         this.life = life;
         setLayout(null);
         setSize(GameConstant.SQUARE_SIZE,GameConstant.SQUARE_SIZE);
-        color = new Color(5, 220, 221);
+        currentImageIcon = ImageReader.PLAYER1[0];
     }
 
     public Player(Bomb bomb, float life) {
+        this.bombs = new ArrayList<Bomb>();
+        this.bombs.add(null);
         this.bomb = bomb;
         this.life = life;
         setLayout(null);
         setSize(GameConstant.SQUARE_SIZE,GameConstant.SQUARE_SIZE);
-        color = new Color(5, 220, 221);
+        currentImageIcon = ImageReader.PLAYER1[0];
     }
 
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        paintWall(g);
+        paintPlayer(g);
     }
 
-    private void paintWall(Graphics g){
-        ((Graphics2D) g).setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        int spacing = (int) (GameConstant.SQUARE_SIZE * 0.05);
-        RadialGradientPaint tempPaint = new RadialGradientPaint(spacing,spacing, (float) Math.max(GameConstant.SQUARE_SIZE - 2 * spacing,0.01),new float[]{0.0f,1.0f},
-                new Color[]{Color.WHITE,color});
-        ((Graphics2D) g).setPaint(tempPaint);
-        ((Graphics2D) g).fill(new Ellipse2D.Double(spacing, spacing, GameConstant.SQUARE_SIZE - 2 * spacing, GameConstant.SQUARE_SIZE - 2 * spacing));
-
-        //    g.drawImage(GameConstant.WALL_IMAGE, 0, 0, (img, infoflags, x, y, width, height) -> false);
+    private void paintPlayer(Graphics g){
+            g.drawImage(currentImageIcon.getImage(), 0, 0, null);
     }
 
-
-
-
-
-
-
+    @Override
+    public void update(Graphics g){
+        super.update(g);
+        paintPlayer(g);
+    }
 
 
 
@@ -75,12 +81,28 @@ public class Player extends JComponent {
         this.playerLocation = playerLocation;
     }
 
-    public Bomb getBomb() {
-        return bomb;
+    public ArrayList<Bomb> getBombs() {
+        return bombs;
+    }
+
+    public void setBombs(ArrayList<Bomb> bombs) {
+        this.bombs = bombs;
     }
 
     public void setBomb(Bomb bomb) {
         this.bomb = bomb;
+    }
+
+    public Bomb getBomb() {
+        return bomb;
+    }
+
+    public ImageIcon getCurrentImageIcon() {
+        return currentImageIcon;
+    }
+
+    public void setCurrentImageIcon(ImageIcon currentImageIcon) {
+        this.currentImageIcon = currentImageIcon;
     }
 
     public float getLife() {

@@ -43,7 +43,7 @@ public class Square extends JPanel {
 
     private void paintSquare(Graphics g) {
         g.setColor(color);
-        g.fillRect(0, 0, getWidth() - 1, getHeight() - 1);
+        g.fillRect(0, 0, getWidth() , getHeight() );
 
     }
 

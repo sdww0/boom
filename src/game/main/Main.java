@@ -29,6 +29,7 @@ public class Main {
         GameData.players.add(player1);
         GameData.getBoard().getSquare()[0][0].setElement(player1);
 
+
         GameData.players.get(0).getBombs().add(null);
         GameData.players.get(0).getBombs().add(null);
         GameData.players.get(0).getBombs().add(null);

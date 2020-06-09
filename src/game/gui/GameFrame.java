@@ -1,7 +1,6 @@
 package game.gui;
 
 import game.basement.Location;
-import game.element.Bomb;
 import game.gamedata.GameConstant;
 import game.gamedata.GameData;
 import game.image.ImageReader;
@@ -10,7 +9,6 @@ import game.thread.BombControlThread;
 import javax.swing.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 
 /**
  * swing游戏框架
@@ -64,7 +62,7 @@ public class GameFrame extends JFrame {
                     
                     boolean isValid = (xChange!=0||yChange!=0)&&
                             board.getSquare()[GameData.players.get(0).getPlayerLocation().getX() + xChange]
-                            [GameData.players.get(0).getPlayerLocation().getY() + yChange].getElement()==0;
+                            [GameData.players.get(0).getPlayerLocation().getY() + yChange].getElementType()==0;
 
                     if(isValid) {
 
@@ -107,7 +105,7 @@ public class GameFrame extends JFrame {
                     }
                     boolean isValid = (xChange!=0||yChange!=0)&&
                             board.getSquare()[GameData.players.get(0).getPlayerLocation().getX() + xChange]
-                                    [GameData.players.get(0).getPlayerLocation().getY() + yChange].getElement()==0;
+                                    [GameData.players.get(0).getPlayerLocation().getY() + yChange].getElementType()==0;
 
                     boolean enoughBombs = false;
                     int place = 0;

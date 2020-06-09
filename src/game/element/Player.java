@@ -4,6 +4,7 @@ import com.sun.corba.se.impl.orbutil.graph.Graph;
 import game.basement.Location;
 import game.gamedata.GameConstant;
 import game.image.ImageReader;
+import game.thread.PlayerLifeControlThread;
 
 import javax.swing.*;
 import java.awt.*;
@@ -43,6 +44,7 @@ public class Player extends JComponent {
         setLayout(null);
         setSize(GameConstant.SQUARE_SIZE,GameConstant.SQUARE_SIZE);
         currentImageIcon = ImageReader.PLAYER1[0];
+        new PlayerLifeControlThread(this).start();
     }
 
     public Player(Bomb bomb, float life) {
@@ -53,6 +55,7 @@ public class Player extends JComponent {
         setLayout(null);
         setSize(GameConstant.SQUARE_SIZE,GameConstant.SQUARE_SIZE);
         currentImageIcon = ImageReader.PLAYER1[0];
+        new PlayerLifeControlThread(this).start();
     }
 
     @Override

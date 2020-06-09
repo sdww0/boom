@@ -53,7 +53,7 @@ public class Square extends JPanel {
      * 3  代表  玩家
      * 4  代表  爆炸
      */
-    public int getElement(){
+    public int getElementType(){
         if(this.element==null){
             return 0;
         }
@@ -74,6 +74,14 @@ public class Square extends JPanel {
             default:
                 return 0;
         }
+    }
+
+    /**
+     * 注意！！调用此方法前必须用getElementType获得样式
+     * @return 含有的element
+     */
+    public Object getElement(){
+        return element;
     }
 
 

@@ -33,7 +33,6 @@ public class GameData {
     public static ArrayList<Player> players = new ArrayList<>();
     public static LinkedList<Location> bombExplodedLocation = new LinkedList<>();
 
-
     public static int[][] getMap() {
         return map;
     }

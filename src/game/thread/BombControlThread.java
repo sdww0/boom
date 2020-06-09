@@ -6,12 +6,8 @@ import game.element.Boom;
 import game.element.Player;
 import game.gamedata.GameConstant;
 import game.gamedata.GameData;
-import game.gui.Board;
-import game.image.ImageReader;
 
-import java.awt.event.KeyEvent;
 import java.util.ArrayList;
-import java.util.concurrent.ThreadPoolExecutor;
 
 /**
  * 控制炸弹爆炸runnable
@@ -101,14 +97,22 @@ public class BombControlThread implements Runnable{
              */
 
             boolean isBomb = GameData.getBoard().getSquare()[location.getX() + xChange]
-                    [location.getY() + yChange].getElement() == 2;
+                    [location.getY() + yChange].getElementType() == 2;
             if (isBomb) {
                 GameData.bombExplodedLocation.add(new Location(location.getX() + xChange,location.getY() + yChange));
                 continue;
             }
 
+            boolean isPlayer = GameData.getBoard().getSquare()[location.getX() + xChange]
+                    [location.getY() + yChange].getElementType() == 3;
+            if(isPlayer){
+                Player player = (Player)GameData.getBoard().getSquare()[location.getX() + xChange]
+                        [location.getY() + yChange].getElement();
+                player.setLife(player.getLife()-10);
+            }
+
             boolean canBreak = GameData.getBoard().getSquare()[location.getX() + xChange]
-                    [location.getY() + yChange].getElement() == 1;
+                    [location.getY() + yChange].getElementType() == 1;
             if(canBreak){
                 locations.add(new Location(location.getX() + xChange
                         , location.getY() + yChange));
@@ -118,7 +122,7 @@ public class BombControlThread implements Runnable{
             }
 
             boolean isValid = GameData.getBoard().getSquare()[location.getX() + xChange]
-                    [location.getY() + yChange].getElement() == 0;
+                    [location.getY() + yChange].getElementType() == 0;
             if (isValid) {
                 locations.add(new Location(location.getX() + xChange
                         , location.getY() + yChange));

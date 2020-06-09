@@ -20,6 +20,7 @@ import java.util.concurrent.TimeUnit;
 public class MapData {
     private static int[][] map ;
     public static boolean canBreak;
+    public static boolean clear = false;
 
     private static MapEditorBoard board = null;
 

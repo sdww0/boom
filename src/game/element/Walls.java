@@ -27,7 +27,7 @@ public class Walls extends JComponent {
         setLayout(null);
         setSize(GameConstant.SQUARE_SIZE,GameConstant.SQUARE_SIZE);
         if(canBreak){
-            imagePosition = (int)(Math.random()*ImageReader.BREAK.length);
+            imagePosition = (int)(Math.random()*ImageReader.FLOWER.length);
         }else{
             imagePosition = (int)(Math.random()*ImageReader.UN_BREAK.length);
         }
@@ -41,7 +41,7 @@ public class Walls extends JComponent {
 
     private void paintWall(Graphics g){
         if(canBreak){
-            g.drawImage(ImageReader.BREAK[imagePosition].getImage(), 0, 0, null);
+            g.drawImage(ImageReader.FLOWER[imagePosition].getImage(), 0, 0, null);
         }else{
             g.drawImage(ImageReader.UN_BREAK[imagePosition].getImage(), 0, 0, null);
         }

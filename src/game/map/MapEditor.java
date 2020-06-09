@@ -28,11 +28,14 @@ public class MapEditor {
         MenuItem outputItem = new MenuItem("confirm");
         MenuItem canBreak1 = new MenuItem("Yes");
         MenuItem canBreak2 = new MenuItem("No");
+        MenuItem clear = new MenuItem("Clear");
         canBreak1.addActionListener(e -> MapData.canBreak = true);
         canBreak2.addActionListener(e -> MapData.canBreak = false);
+        clear.addActionListener(e->MapData.clear = !MapData.clear);
         outputItem.addActionListener(e -> MapOutPut.createMapFile());
         canBreak.add(canBreak1);
         canBreak.add(canBreak2);
+        canBreak.add(clear);
         output.add(outputItem);
         menuBar.add(canBreak);
         menuBar.add(output);

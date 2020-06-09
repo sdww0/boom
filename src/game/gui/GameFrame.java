@@ -4,6 +4,7 @@ import game.basement.Location;
 import game.gamedata.GameConstant;
 import game.gamedata.GameData;
 import game.image.ImageReader;
+import game.music.MusicPlayer;
 import game.thread.BombControlThread;
 
 import javax.swing.*;
@@ -127,6 +128,7 @@ public class GameFrame extends JFrame {
                     }
 
                     if(isValid&&enoughBombs) {
+                        MusicPlayer.Play(MusicPlayer.PLACE);
                         GameData.players.get(0).getBombs().remove(place);
                         GameData.players.get(0).getBombs().add(place,GameData.players.get(0).getBomb());
                         board.getSquare()[GameData.players.get(0).getPlayerLocation().getX() + xChange]

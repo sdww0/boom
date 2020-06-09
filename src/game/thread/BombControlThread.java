@@ -6,6 +6,7 @@ import game.element.Boom;
 import game.element.Player;
 import game.gamedata.GameConstant;
 import game.gamedata.GameData;
+import game.music.MusicPlayer;
 
 import java.util.ArrayList;
 
@@ -66,6 +67,7 @@ public class BombControlThread implements Runnable{
         locations.add(location);
         GameData.getBoard().getSquare()[location.getX()]
                 [location.getY()].setElement(new Boom());
+        MusicPlayer.Play(MusicPlayer.BOOM);
         for (int n = 0; n < 4; n++) {
             int xChange = 0, yChange = 0;
             switch (n) {
@@ -106,6 +108,7 @@ public class BombControlThread implements Runnable{
             boolean isPlayer = GameData.getBoard().getSquare()[location.getX() + xChange]
                     [location.getY() + yChange].getElementType() == 3;
             if(isPlayer){
+                MusicPlayer.Play(MusicPlayer.HURT);
                 Player player = (Player)GameData.getBoard().getSquare()[location.getX() + xChange]
                         [location.getY() + yChange].getElement();
                 player.setLife(player.getLife()-1);

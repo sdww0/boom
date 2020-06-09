@@ -32,11 +32,16 @@ public class MapEditorSquare extends JPanel {
         addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                setElement(new Walls(MapData.canBreak));
-                if(MapData.canBreak) {
-                    MapData.getMap()[squareLocation.getX()][squareLocation.getY()] =1;
+                if(!MapData.clear) {
+                    setElement(new Walls(MapData.canBreak));
+                    if (MapData.canBreak) {
+                        MapData.getMap()[squareLocation.getX()][squareLocation.getY()] = 1;
+                    } else {
+                        MapData.getMap()[squareLocation.getX()][squareLocation.getY()] = 2;
+                    }
                 }else{
-                    MapData.getMap()[squareLocation.getX()][squareLocation.getY()] =2;
+                    MapData.getMap()[squareLocation.getX()][squareLocation.getY()] = 0;
+                    removeAllElement();
                 }
             }
 
@@ -72,39 +77,6 @@ public class MapEditorSquare extends JPanel {
         g.setColor(color);
         g.fillRect(0, 0, getWidth()-1 , getHeight()-1 );
 
-    }
-
-    /**
-     *
-     * @return 含有的元素类型
-     * -1 代表  不可摧毁的墙壁
-     * 0  代表  无元素
-     * 1  代表  可摧毁的墙壁
-     * 2  代表  炸弹
-     * 3  代表  玩家
-     * 4  代表  爆炸
-     */
-    public int getElementType(){
-        if(this.element==null){
-            return 0;
-        }
-        switch (this.element.getClass().getName()) {
-            case "game.element.Boom":
-                return 4;
-            case "game.element.Player":
-                return 3;
-            case "game.element.Bomb":
-                return 2;
-            case "game.element.Walls":
-                Walls walls = (Walls)(this.element);
-                if(walls.isCanBreak()){
-                    return 1;
-                }else {
-                    return -1;
-                }
-            default:
-                return 0;
-        }
     }
 
     /**

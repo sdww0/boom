@@ -37,19 +37,25 @@ public class GameFrame extends JFrame {
                 if(e.getKeyCode()==KeyEvent.VK_W||e.getKeyCode()==KeyEvent.VK_S||e.getKeyCode()==KeyEvent.VK_A||e.getKeyCode()==KeyEvent.VK_D){
                     int xChange = 0, yChange = 0;
 
-                    if(GameData.players.get(0).getPlayerLocation().getY()!=0&&e.getKeyCode()==KeyEvent.VK_W){
-                        yChange = -1;
+                    if(e.getKeyCode()==KeyEvent.VK_W){
+                        if(GameData.players.get(0).getPlayerLocation().getY()!=0) {
+                            yChange = -1;
+                        }
                         GameData.players.get(0).setCurrentImageIcon(ImageReader.PLAYER1[1]);
-                    }else if(GameData.players.get(0).getPlayerLocation().getY()!= GameConstant.SQUARE_AMOUNT-1
-                            &&e.getKeyCode()==KeyEvent.VK_S){
-                        yChange = 1;
+                    }else if(e.getKeyCode()==KeyEvent.VK_S){
+                        if(GameData.players.get(0).getPlayerLocation().getY()!= GameConstant.SQUARE_AMOUNT-1) {
+                            yChange = 1;
+                        }
                         GameData.players.get(0).setCurrentImageIcon(ImageReader.PLAYER1[0]);
-                    }else if(GameData.players.get(0).getPlayerLocation().getX()!=0&&e.getKeyCode()==KeyEvent.VK_A){
-                        xChange = -1;
+                    }else if(e.getKeyCode()==KeyEvent.VK_A){
+                        if(GameData.players.get(0).getPlayerLocation().getX()!=0) {
+                            xChange = -1;
+                        }
                         GameData.players.get(0).setCurrentImageIcon(ImageReader.PLAYER1[3]);
-                    }else if(GameData.players.get(0).getPlayerLocation().getX()!=GameConstant.SQUARE_AMOUNT-1
-                            &&e.getKeyCode()==KeyEvent.VK_D){
-                        xChange = 1;
+                    }else if(e.getKeyCode()==KeyEvent.VK_D){
+                        if(GameData.players.get(0).getPlayerLocation().getX()!=GameConstant.SQUARE_AMOUNT-1) {
+                            xChange = 1;
+                        }
                         GameData.players.get(0).setCurrentImageIcon(ImageReader.PLAYER1[2]);
                     }
                     /*
@@ -77,6 +83,9 @@ public class GameFrame extends JFrame {
                         GameData.players.get(0).setPlayerLocation(new Location(
                                 GameData.players.get(0).getPlayerLocation().getX() + xChange,
                                 GameData.players.get(0).getPlayerLocation().getY() + yChange));
+                    }else{
+                        board.getSquare()[GameData.players.get(0).getPlayerLocation().getX()]
+                                [GameData.players.get(0).getPlayerLocation().getY()].repaint();
                     }
                 }
                 /*

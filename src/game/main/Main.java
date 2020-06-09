@@ -28,8 +28,6 @@ public class Main {
         Player player1 = new Player(new Location(0,0),new Bomb(1,1,1),100);
         GameData.players.add(player1);
         GameData.getBoard().getSquare()[0][0].setElement(player1);
-
-
         GameData.players.get(0).getBombs().add(null);
         GameData.players.get(0).getBombs().add(null);
         GameData.players.get(0).getBombs().add(null);

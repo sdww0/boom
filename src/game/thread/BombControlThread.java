@@ -108,7 +108,7 @@ public class BombControlThread implements Runnable{
             if(isPlayer){
                 Player player = (Player)GameData.getBoard().getSquare()[location.getX() + xChange]
                         [location.getY() + yChange].getElement();
-                player.setLife(player.getLife()-10);
+                player.setLife(player.getLife()-1);
             }
 
             boolean canBreak = GameData.getBoard().getSquare()[location.getX() + xChange]

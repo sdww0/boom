@@ -3,6 +3,7 @@ package game.element;
 import com.sun.corba.se.impl.orbutil.graph.Graph;
 import game.basement.Location;
 import game.gamedata.GameConstant;
+import game.gamedata.GameData;
 import game.image.ImageReader;
 import game.thread.PlayerLifeControlThread;
 
@@ -40,7 +41,7 @@ public class Player extends JComponent {
         this.bombs = new ArrayList<Bomb>();
         this.bombs.add(null);
         this.bomb = bomb;
-        this.life = life;
+        this.life = GameData.playersLife;
         setLayout(null);
         setSize(GameConstant.SQUARE_SIZE,GameConstant.SQUARE_SIZE);
         currentImageIcon = ImageReader.PLAYER1[0];
@@ -51,7 +52,7 @@ public class Player extends JComponent {
         this.bombs = new ArrayList<Bomb>();
         this.bombs.add(null);
         this.bomb = bomb;
-        this.life = life;
+        this.life = GameData.playersLife;
         setLayout(null);
         setSize(GameConstant.SQUARE_SIZE,GameConstant.SQUARE_SIZE);
         currentImageIcon = ImageReader.PLAYER1[0];

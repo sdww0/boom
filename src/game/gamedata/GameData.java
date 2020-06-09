@@ -9,6 +9,7 @@ import org.omg.CORBA.PUBLIC_MEMBER;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -33,6 +34,8 @@ public class GameData {
     public static ArrayList<Player> players = new ArrayList<>();
     public static LinkedList<Location> bombExplodedLocation = new LinkedList<>();
 
+    public static int playersLife = 5;
+
     public static int[][] getMap() {
         return map;
     }
@@ -50,7 +53,13 @@ public class GameData {
     }
 
     public static void init(){
-        map = MapList.map1.clone();
+        map = new int[GameConstant.SQUARE_AMOUNT][GameConstant.SQUARE_AMOUNT];
+        for(int x = 0;x<GameConstant.SQUARE_AMOUNT;x++){
+            for(int y = 0;y<GameConstant.SQUARE_AMOUNT;y++){
+                map[x][y] = MapList.map1[y][x];
+            }
+        }
+
         board = new Board();
 
 

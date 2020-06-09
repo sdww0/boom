@@ -46,22 +46,31 @@ public class Square extends JPanel {
     /**
      *
      * @return 含有的元素类型
-     * 0 代表无元素
-     * 1 代表 墙壁
-     * 2 代表 炸弹
-     * 3 代表 玩家
+     * -1 代表  不可摧毁的墙壁
+     * 0  代表  无元素
+     * 1  代表  可摧毁的墙壁
+     * 2  代表  炸弹
+     * 3  代表  玩家
+     * 4  代表  爆炸
      */
     public int getElement(){
         if(this.element==null){
             return 0;
         }
         switch (this.element.getClass().getName()) {
+            case "game.element.Boom":
+                return 4;
             case "game.element.Player":
                 return 3;
             case "game.element.Bomb":
                 return 2;
             case "game.element.Walls":
-                return 1;
+                Walls walls = (Walls)(this.element);
+                if(walls.isCanBreak()){
+                    return 1;
+                }else {
+                    return -1;
+                }
             default:
                 return 0;
         }

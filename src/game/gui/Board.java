@@ -1,6 +1,7 @@
 package game.gui;
 
 import game.basement.Location;
+import game.element.Walls;
 import game.gamedata.GameConstant;
 import game.gamedata.GameData;
 
@@ -25,7 +26,26 @@ public class Board extends JComponent {
                 add(square[n][i]);
             }
         }
+
+        initElement();
+
     }
+
+    private void initElement(){
+
+        for(int x = 0;x<GameConstant.SQUARE_AMOUNT;x++){
+            for(int y = 0;y<GameConstant.SQUARE_AMOUNT;y++){
+                switch(GameData.getMap()[x][y]){
+                    case 0:break;
+                    case 1:square[x][y].setElement(new Walls(true));break;
+                    case 2:square[x][y].setElement(new Walls(false));break;
+                    default:throw new IllegalArgumentException("wrong map");
+                }
+            }
+        }
+
+    }
+
 
     public Square[][] getSquare() {
         return square;

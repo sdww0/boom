@@ -3,6 +3,7 @@ package game.gamedata;
 import game.basement.Location;
 import game.element.Player;
 import game.gui.Board;
+import game.map.MapList;
 import org.omg.CORBA.PUBLIC_MEMBER;
 
 import java.util.ArrayList;
@@ -23,11 +24,9 @@ import java.util.concurrent.TimeUnit;
  */
 public class GameData {
 
-    private static int[][] map = {
+    private static int[][] map ;
 
-    };
-
-    private static Board board = new Board();
+    private static Board board = null;
     private static ThreadPoolExecutor bombControlPool = new ThreadPoolExecutor(20,40,
             GameConstant.BOMB_SECONDS+1, TimeUnit.SECONDS,new ArrayBlockingQueue<Runnable>(20));
 
@@ -47,4 +46,14 @@ public class GameData {
         return bombControlPool;
     }
 
+    public static void setMap(int[][] map) {
+        GameData.map = map;
+    }
+
+    public static void init(){
+        map = MapList.map1.clone();
+        board = new Board();
+
+
+    }
 }

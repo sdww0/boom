@@ -20,12 +20,17 @@ import java.awt.geom.Ellipse2D;
 public class Walls extends JComponent {
 
     private boolean canBreak;
+    private int imagePosition;
 
     public Walls(boolean canBreak) {
         this.canBreak = canBreak;
         setLayout(null);
         setSize(GameConstant.SQUARE_SIZE,GameConstant.SQUARE_SIZE);
-
+        if(canBreak){
+            imagePosition = (int)(Math.random()*ImageReader.BREAK.length);
+        }else{
+            imagePosition = (int)(Math.random()*ImageReader.UN_BREAK.length);
+        }
     }
 
     @Override
@@ -36,11 +41,10 @@ public class Walls extends JComponent {
 
     private void paintWall(Graphics g){
         if(canBreak){
-            g.drawImage(ImageReader.BREAK[(int)(Math.random()*ImageReader.BREAK.length)].getImage(), 0, 0, null);
+            g.drawImage(ImageReader.BREAK[imagePosition].getImage(), 0, 0, null);
         }else{
-            g.drawImage(ImageReader.UN_BREAK[(int)(Math.random()*ImageReader.UN_BREAK.length)].getImage(), 0, 0, null);
+            g.drawImage(ImageReader.UN_BREAK[imagePosition].getImage(), 0, 0, null);
         }
-
     }
 
 

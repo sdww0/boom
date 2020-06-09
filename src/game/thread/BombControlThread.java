@@ -89,15 +89,34 @@ public class BombControlThread implements Runnable{
                     break;
             }
             /*
+             * 限制位置
+             */
+            if(location.getX() + xChange==-1||location.getX() + xChange==GameConstant.SQUARE_AMOUNT
+                    ||location.getY() + yChange==-1||location.getY() + yChange==GameConstant.SQUARE_AMOUNT){
+                continue;
+            }
+            /*
              * 如果是炸弹
              * 则连爆
              */
+
             boolean isBomb = GameData.getBoard().getSquare()[location.getX() + xChange]
                     [location.getY() + yChange].getElement() == 2;
             if (isBomb) {
                 GameData.bombExplodedLocation.add(new Location(location.getX() + xChange,location.getY() + yChange));
                 continue;
             }
+
+            boolean canBreak = GameData.getBoard().getSquare()[location.getX() + xChange]
+                    [location.getY() + yChange].getElement() == 1;
+            if(canBreak){
+                locations.add(new Location(location.getX() + xChange
+                        , location.getY() + yChange));
+                GameData.getBoard().getSquare()[location.getX() + xChange]
+                        [location.getY() + yChange].setElement(new Boom());
+                continue;
+            }
+
             boolean isValid = GameData.getBoard().getSquare()[location.getX() + xChange]
                     [location.getY() + yChange].getElement() == 0;
             if (isValid) {
@@ -108,7 +127,7 @@ public class BombControlThread implements Runnable{
             }
         }
         try {
-            Thread.sleep(2000);
+            Thread.sleep(1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

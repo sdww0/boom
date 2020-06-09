@@ -54,10 +54,18 @@ public class GameFrame extends JFrame {
                         xChange = 1;
                         GameData.players.get(0).setCurrentImageIcon(ImageReader.PLAYER1[2]);
                     }
-
+                    /*
+                     * 限制位置
+                     */
+                    if(GameData.players.get(0).getPlayerLocation().getX() + xChange==-1||GameData.players.get(0).getPlayerLocation().getX() + xChange==GameConstant.SQUARE_AMOUNT
+                            ||GameData.players.get(0).getPlayerLocation().getY() + yChange==-1||GameData.players.get(0).getPlayerLocation().getY() + yChange==GameConstant.SQUARE_AMOUNT){
+                        return;
+                    }
+                    
                     boolean isValid = (xChange!=0||yChange!=0)&&
                             board.getSquare()[GameData.players.get(0).getPlayerLocation().getX() + xChange]
                             [GameData.players.get(0).getPlayerLocation().getY() + yChange].getElement()==0;
+
                     if(isValid) {
 
                         board.getSquare()[GameData.players.get(0).getPlayerLocation().getX()]
@@ -90,7 +98,13 @@ public class GameFrame extends JFrame {
                             &&e.getKeyCode()==KeyEvent.VK_RIGHT){
                         xChange = 1;
                     }
-
+                    /*
+                     * 限制位置
+                     */
+                    if(GameData.players.get(0).getPlayerLocation().getX() + xChange==-1||GameData.players.get(0).getPlayerLocation().getX() + xChange==GameConstant.SQUARE_AMOUNT
+                            ||GameData.players.get(0).getPlayerLocation().getY() + yChange==-1||GameData.players.get(0).getPlayerLocation().getY() + yChange==GameConstant.SQUARE_AMOUNT){
+                        return;
+                    }
                     boolean isValid = (xChange!=0||yChange!=0)&&
                             board.getSquare()[GameData.players.get(0).getPlayerLocation().getX() + xChange]
                                     [GameData.players.get(0).getPlayerLocation().getY() + yChange].getElement()==0;

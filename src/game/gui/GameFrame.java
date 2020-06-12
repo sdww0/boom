@@ -24,7 +24,7 @@ public class GameFrame extends JFrame {
         setLocationRelativeTo(null);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setLayout(null);
-        setSize(900,700);
+        setSize(1000,700);
 
         add(board);
 
@@ -72,6 +72,11 @@ public class GameFrame extends JFrame {
                             [GameData.players.get(0).getPlayerLocation().getY() + yChange].getElementType()==0;
 
                     if(isValid) {
+                        if(board.getSquare()[GameData.players.get(0).getPlayerLocation().getX() + xChange]
+                                [GameData.players.get(0).getPlayerLocation().getY() + yChange].getItem()!=null){
+                            reactPickUpItem(new Location(GameData.players.get(0).getPlayerLocation().getX() + xChange,
+                                    GameData.players.get(0).getPlayerLocation().getY() + yChange));
+                        }
 
                         board.getSquare()[GameData.players.get(0).getPlayerLocation().getX()]
                                 [GameData.players.get(0).getPlayerLocation().getY()].removeAllElement();
@@ -147,6 +152,17 @@ public class GameFrame extends JFrame {
 
         requestFocus();
 
+    }
+
+    private void reactPickUpItem(Location location){
+        MusicPlayer.Play(MusicPlayer.PICKUP);
+        switch(GameData.getBoard().getSquare()[location.getX()][location.getY()].getItem().getType()){
+            case 1:GameData.players.get(0).getBombs().add(null);break;
+            case 2:GameData.players.get(0).getBomb().setRadius(GameData.players.get(0).getBomb().getRadius()+1);break;
+            case 3:GameData.players.get(0).setLife(GameData.players.get(0).getLife()+1);break;
+            default:
+        }
+        GameData.getBoard().getSquare()[location.getX()][location.getY()].setItem(null);
     }
 
 

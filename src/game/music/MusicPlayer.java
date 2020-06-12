@@ -83,6 +83,7 @@ public class MusicPlayer {
     }
 
     public static void higherVolume(){
+        if(volume-5.0f<=0.01f)return;
         gainControl.setValue(volume+=5.0f);
     }
 

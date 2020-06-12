@@ -1,6 +1,7 @@
 package game.thread;
 
 import game.element.Player;
+import game.gamedata.GameConstant;
 import game.gamedata.GameData;
 
 import javax.swing.*;
@@ -20,14 +21,36 @@ public class PlayerLifeControlThread extends Thread {
 
 class ControlRunnable implements Runnable{
     Player player;
+    int playerLife ;
+    int playerBoom ;
+    int playerBombAmount ;
 
     ControlRunnable(Player player){
+         playerLife = player.getLife();
+         playerBoom = player.getBomb().getRadius();
+         playerBombAmount = player.getBombs().size();
         this.player = player;
     }
 
     @Override
     public void run() {
         while(true){
+
+            if(playerLife!=player.getLife()){
+                GameData.getRightMenu().setPlayerStatusNumber(player.getWhichPlayer(), GameConstant.PLAYER_LIFE_TYPE,player.getLife());
+                playerLife = player.getLife();
+            }
+            if(playerBoom!=player.getBomb().getRadius()){
+                GameData.getRightMenu().setPlayerStatusNumber(player.getWhichPlayer(), GameConstant.PLAYER_BOOM_RADIUS_TYPE,player.getBomb().getRadius());
+                playerBoom=player.getBomb().getRadius();
+            }
+            if(playerBombAmount<player.getBombs().size()){
+                GameData.getRightMenu().setPlayerStatusNumber(player.getWhichPlayer(), GameConstant.PLAYER_BOMB_AMOUNT_TYPE,player.getBombs().size());
+                playerBombAmount=player.getBombs().size();
+            }
+
+
+
             if(player.getLife()<=0){
                 GameData.players.remove(player);
                 JOptionPane.showConfirmDialog(GameData.getBoard(),"Player Dead!!!!");

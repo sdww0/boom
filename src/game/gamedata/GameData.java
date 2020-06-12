@@ -3,6 +3,7 @@ package game.gamedata;
 import game.basement.Location;
 import game.element.Player;
 import game.gui.Board;
+import game.gui.RightMenu;
 import game.map.MapList;
 import org.omg.CORBA.PUBLIC_MEMBER;
 
@@ -28,11 +29,12 @@ public class GameData {
     private static int[][] map ;
 
     private static Board board = null;
+    private static RightMenu rightMenu = null;
     private static ThreadPoolExecutor bombControlPool = new ThreadPoolExecutor(20,40,
             GameConstant.BOMB_SECONDS+1, TimeUnit.SECONDS,new ArrayBlockingQueue<Runnable>(20));
 
     public static ArrayList<Player> players = new ArrayList<>();
-    public static LinkedList<Location> bombExplodedLocation = new LinkedList<>();
+    public static volatile LinkedList<Location> bombExplodedLocation = new LinkedList<>();
 
     public static int playersLife = 5;
 
@@ -52,6 +54,10 @@ public class GameData {
         GameData.map = map;
     }
 
+    public static RightMenu getRightMenu() {
+        return rightMenu;
+    }
+
     public static void init(){
         map = new int[GameConstant.SQUARE_AMOUNT][GameConstant.SQUARE_AMOUNT];
         for(int x = 0;x<GameConstant.SQUARE_AMOUNT;x++){
@@ -59,7 +65,7 @@ public class GameData {
                 map[x][y] = MapList.map1[y][x];
             }
         }
-
+        rightMenu = new RightMenu();
         board = new Board();
 
 

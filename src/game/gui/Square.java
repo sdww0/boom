@@ -3,6 +3,7 @@ package game.gui;
 import com.sun.istack.internal.NotNull;
 import game.basement.Location;
 import game.element.Bomb;
+import game.element.Item;
 import game.element.Player;
 import game.element.Walls;
 import game.gamedata.GameConstant;
@@ -19,6 +20,7 @@ public class Square extends JPanel {
      * 棋盘上含有什么元素（炸弹？墙壁？玩家？）
      */
     private Object element;
+    private Item item;
 
     private Location squareLocation;
     private Color color;
@@ -84,19 +86,42 @@ public class Square extends JPanel {
         return element;
     }
 
+    public Item getItem(){
+        return item;
+    }
+
+    public void setItem(Item item) {
+        if(item==null){
+            if(this.item==null){
+                return;
+            }else{
+                remove(this.item);
+                this.item = null;
+            }
+        }else {
+            if (this.item != null) {
+                remove(this.item);
+            }
+            this.item = item;
+            add(item);
+
+        }
+    }
 
     public void removeAllElement(){
         this.element = null;
         removeAll();
+        if(item!=null){
+            add(item);
+        }
         repaint();
     }
-
 
     /**
      *getter and setter
      */
     public void setElement(Object element) {
-        removeAll();
+        removeAllElement();
         this.element = element;
         add((Component) element);
         repaint();
@@ -110,11 +135,4 @@ public class Square extends JPanel {
         this.squareLocation = squareLocation;
     }
 
-    public Color getColor() {
-        return color;
-    }
-
-    public void setColor(Color color) {
-        this.color = color;
-    }
 }

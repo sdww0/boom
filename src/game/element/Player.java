@@ -31,12 +31,14 @@ public class Player extends JComponent {
      * 测试用颜色
      */
     private Location playerLocation;
-    private ArrayList<Bomb> bombs;
+    private volatile ArrayList<Bomb> bombs;
     private Bomb bomb;
-    private float life;
+    private int life;
     private ImageIcon currentImageIcon;
+    private int whichPlayer;
 
-    public Player(Location playerLocation, Bomb bomb, float life) {
+    public Player(int whichPlayer,Location playerLocation, Bomb bomb, float life) {
+        this.whichPlayer = whichPlayer;
         this.playerLocation = playerLocation;
         this.bombs = new ArrayList<Bomb>();
         this.bombs.add(null);
@@ -109,11 +111,15 @@ public class Player extends JComponent {
         this.currentImageIcon = currentImageIcon;
     }
 
-    public float getLife() {
+    public int getLife() {
         return life;
     }
 
-    public void setLife(float life) {
+    public void setLife(int life) {
         this.life = life;
+    }
+
+    public int getWhichPlayer() {
+        return whichPlayer;
     }
 }

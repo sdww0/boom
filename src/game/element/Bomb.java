@@ -20,19 +20,16 @@ import java.awt.image.ImageProducer;
  * @author njdnhh
  */
 public class Bomb extends JComponent {
-    /**
-     * 一旦放下便不可以再进行操作
-     */
+
     private int radius;
     private int damage;
-    private int time;
 
-    public Bomb(int radius, int damage, int time) {
+
+    public Bomb(int radius, int damage) {
         setLayout(null);
         setSize(GameConstant.SQUARE_SIZE,GameConstant.SQUARE_SIZE);
         this.radius = radius;
         this.damage = damage;
-        this.time = time;
     }
 
     @Override
@@ -54,7 +51,7 @@ public class Bomb extends JComponent {
         return damage;
     }
 
-    public int getTime() {
-        return time;
+    public void setRadius(int radius) {
+        this.radius = radius;
     }
 }

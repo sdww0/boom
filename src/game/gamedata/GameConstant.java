@@ -16,6 +16,11 @@ public class GameConstant {
     public static final int SQUARE_AMOUNT = 16;
     public static final int SQUARE_SIZE = BOARD_SIZE/SQUARE_AMOUNT;
 
+    public static final int PLAYER_BOOM_RADIUS_TYPE = 0;
+    public static final int PLAYER_LIFE_TYPE = 1;
+    public static final int PLAYER_BOMB_AMOUNT_TYPE = 2;
+    public static final int PLAYER_UNKNOWN_TYPE = 3;
+
     public static final Color BOARD_COLOR1 = new Color(119, 100, 188);
     public static final Color BOARD_COLOR2 = new Color(0,0,0);
 

@@ -2,6 +2,10 @@ package game.image;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
 
 /**
  * 读取图片
@@ -49,7 +53,18 @@ public class ImageReader {
             new ImageIcon(ImageReader.class.getResource("/game/image/player/pink3.png")),
             new ImageIcon(ImageReader.class.getResource("/game/image/player/pink4.png"))
     };
+    public static final ImageIcon[] PLAYER_STATUS = {
+            new ImageIcon(ImageReader.class.getResource("/game/image/player/player1.PNG")),
+            new ImageIcon(ImageReader.class.getResource("/game/image/player/player2.PNG")),
+            new ImageIcon(ImageReader.class.getResource("/game/image/player/player3.PNG")),
+            new ImageIcon(ImageReader.class.getResource("/game/image/player/player4.PNG"))
+    };
 
+    public static final ImageIcon RECOVER = new ImageIcon(ImageReader.class.getResource("/game/image/item/recover2.png"));
+    public static final ImageIcon MORE_BOMB = new ImageIcon(ImageReader.class.getResource("/game/image/item/MoreBomb.png"));
+    public static final ImageIcon AREA_BOMB = new ImageIcon(ImageReader.class.getResource("/game/image/item/Area.png"));
+
+    public static final ImageIcon[] ITEM = {MORE_BOMB,AREA_BOMB,RECOVER};
     public static final ImageIcon[][] ALL_PLAYER = {PLAYER1, PLAYER2, PLAYER3, PLAYER4};
     public static final ImageIcon[] BREAK = {BUILDING[0],BUILDING[1],BUILDING[2],FLOWER[0],FLOWER[1],FLOWER[2],FLOWER[3]};
     public static final ImageIcon[] UN_BREAK = {TREE[0],TREE[1],TREE[2]};
@@ -65,7 +80,5 @@ public class ImageReader {
         }
         return false;
     }
-
-
 
 }

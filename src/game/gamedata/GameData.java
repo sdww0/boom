@@ -5,12 +5,8 @@ import game.element.Player;
 import game.gui.Board;
 import game.gui.RightMenu;
 import game.map.MapList;
-import org.omg.CORBA.PUBLIC_MEMBER;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -30,13 +26,22 @@ public class GameData {
 
     private static Board board = null;
     private static RightMenu rightMenu = null;
-    private static ThreadPoolExecutor bombControlPool = new ThreadPoolExecutor(20,40,
+    private static ThreadPoolExecutor bombControlThreadPool = new ThreadPoolExecutor(20,40,
+            GameConstant.BOMB_SECONDS+1, TimeUnit.SECONDS,new ArrayBlockingQueue<Runnable>(20));
+    private static ThreadPoolExecutor GameExecutePool = new ThreadPoolExecutor(20,40,
             GameConstant.BOMB_SECONDS+1, TimeUnit.SECONDS,new ArrayBlockingQueue<Runnable>(20));
 
-    public static ArrayList<Player> players = new ArrayList<>();
+    /**
+     * 一号玩家
+     * 二号玩家（如果无二号玩家则设置成null)
+     */
+    public static Player player1 = null;
+    public static Player player2 = null;
     public static volatile LinkedList<Location> bombExplodedLocation = new LinkedList<>();
 
+
     public static int playersLife = 5;
+    public static int playersDefaultSpeed = 10;
 
     public static int[][] getMap() {
         return map;
@@ -46,8 +51,8 @@ public class GameData {
         return board;
     }
 
-    public static ThreadPoolExecutor getBombControlPool() {
-        return bombControlPool;
+    public static ThreadPoolExecutor getBombControlThreadPool() {
+        return bombControlThreadPool;
     }
 
     public static void setMap(int[][] map) {
@@ -67,7 +72,13 @@ public class GameData {
         }
         rightMenu = new RightMenu();
         board = new Board();
+        playersLife = 5;
+        player1 = null;
+        player2 = null;
 
+    }
 
+    public static ThreadPoolExecutor getGameExecutePool() {
+        return GameExecutePool;
     }
 }

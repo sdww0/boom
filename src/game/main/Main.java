@@ -1,6 +1,7 @@
 package game.main;
 
 import game.basement.Location;
+import game.basement.TrueLocation;
 import game.element.Bomb;
 import game.element.Player;
 
@@ -9,9 +10,9 @@ import game.gamedata.GameData;
 
 import game.gui.GameFrame;
 
-import game.image.ImageReader;
 import game.music.MusicPlayer;
 
+import javax.swing.*;
 import java.awt.*;
 
 /**
@@ -22,39 +23,30 @@ public class Main {
 
 
     public static void main(String[] args){
+        initGame();
+    }
+
+    public static void initGame(){
         GameData.init();
         MusicPlayer.init();
 
         GameFrame mainFrame = new GameFrame(GameData.getBoard());
-        Player player1 = new Player(0,new Location(0,0),new Bomb(1,1), GameData.playersLife);
-        GameData.players.add(player1);
-        GameData.getBoard().getSquare()[0][0].setElement(player1);
+        //测试添加玩家用
+        Player player1 = new Player(GameConstant.FIRST_PLAYER,new TrueLocation(0,0),new Bomb(1,1), GameData.playersLife,true);
+        GameData.player1 = player1;
+        mainFrame.getLayeredPane().add(player1, JLayeredPane.POPUP_LAYER);
 
-        MenuBar menuBar = new MenuBar();
-        Menu menu = new Menu("Menu");
-        Menu music = new Menu("Music");
-        MenuItem start = new MenuItem("start");
-        MenuItem stop = new MenuItem("stop");
-        MenuItem lower = new MenuItem("lower Volume ");
-        MenuItem higher = new MenuItem("higher Volume ");
-        lower.addActionListener(e->MusicPlayer.lowerVolume());
-        higher.addActionListener(e->MusicPlayer.higherVolume());
-        start.addActionListener(e->MusicPlayer.playBackGroundMusic());
-        stop.addActionListener(e->MusicPlayer.stopBackGroundMusic());
-        menuBar.add(menu);
-        menu.add(music);
-        music.add(start);
-        music.add(stop);
-        music.add(lower);
-        music.add(higher);
-        mainFrame.setMenuBar(menuBar);
+        Player player2 = new Player(GameConstant.SECOND_PLAYER,Location.changeToTrueLocation(new Location(15,0)),new Bomb(1,1),GameData.playersLife,false);
+        GameData.player2 = player2;
+        mainFrame.getLayeredPane().add(player2,JLayeredPane.POPUP_LAYER);
 
-        mainFrame.add(GameData.getRightMenu());
-        mainFrame.add(GameData.getBoard());
+        mainFrame.init();
         mainFrame.setVisible(true);
-
-
     }
+
+
+
+
 
 
 }

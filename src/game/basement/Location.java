@@ -1,5 +1,8 @@
 package game.basement;
 
+import game.gamedata.GameConstant;
+import game.gamedata.GameData;
+
 /**
  * 虚拟化位置
  * @author njdnhh
@@ -29,4 +32,9 @@ public class Location {
     public void setY(int y) {
         this.y = y;
     }
+
+    public static TrueLocation changeToTrueLocation(Location location){
+        return new TrueLocation(GameConstant.SQUARE_SIZE*location.getX(),GameConstant.SQUARE_SIZE*location.getY());
+    }
+
 }

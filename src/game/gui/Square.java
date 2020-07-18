@@ -1,11 +1,7 @@
 package game.gui;
 
-import com.sun.istack.internal.NotNull;
 import game.basement.Location;
-import game.element.Bomb;
-import game.element.Item;
-import game.element.Player;
-import game.element.Walls;
+import game.element.*;
 import game.gamedata.GameConstant;
 
 import javax.swing.*;
@@ -17,10 +13,15 @@ import java.awt.*;
  */
 public class Square extends JPanel {
     /**
-     * 棋盘上含有什么元素（炸弹？墙壁？玩家？）
+     * 棋盘上含有什么元素（炸弹/墙壁）
      */
     private Object element;
     private Item item;
+    /**
+     * 如果无玩家在此方格上则为null
+     * 如有则为该玩家
+     */
+    private Player player;
 
     private Location squareLocation;
     private Color color;
@@ -48,33 +49,28 @@ public class Square extends JPanel {
     /**
      *
      * @return 含有的元素类型
-     * -1 代表  不可摧毁的墙壁
-     * 0  代表  无元素
-     * 1  代表  可摧毁的墙壁
-     * 2  代表  炸弹
-     * 3  代表  玩家
-     * 4  代表  爆炸
      */
-    public int getElementType(){
+    public ElementType getElementType(){
+        if(player!=null){
+            return ElementType.PLAYER;
+        }
         if(this.element==null){
-            return 0;
+            return ElementType.NULL;
         }
         switch (this.element.getClass().getName()) {
             case "game.element.Boom":
-                return 4;
-            case "game.element.Player":
-                return 3;
+                return ElementType.BOOM;
             case "game.element.Bomb":
-                return 2;
+                return ElementType.BOMB;
             case "game.element.Walls":
                 Walls walls = (Walls)(this.element);
                 if(walls.isCanBreak()){
-                    return 1;
+                    return ElementType.BREAKABLE_WALL;
                 }else {
-                    return -1;
+                    return ElementType.UNBREAKABLE_WALL;
                 }
             default:
-                return 0;
+                return ElementType.NULL;
         }
     }
 
@@ -92,9 +88,7 @@ public class Square extends JPanel {
 
     public void setItem(Item item) {
         if(item==null){
-            if(this.item==null){
-                return;
-            }else{
+            if(this.item!=null){
                 remove(this.item);
                 this.item = null;
             }
@@ -104,8 +98,9 @@ public class Square extends JPanel {
             }
             this.item = item;
             add(item);
-
+            item.repaint();
         }
+
     }
 
     public void removeAllElement(){
@@ -135,4 +130,11 @@ public class Square extends JPanel {
         this.squareLocation = squareLocation;
     }
 
+    public Player getPlayer() {
+        return player;
+    }
+
+    public void setPlayer(Player player) {
+        this.player = player;
+    }
 }

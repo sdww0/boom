@@ -56,7 +56,7 @@ public class Player extends JComponent {
         setLayout(null);
         setSize(GameConstant.SQUARE_SIZE,GameConstant.SQUARE_SIZE);
         setLocation(playerLocation.getX(),playerLocation.getY());
-        currentImageIcon = ImageReader.PLAYER1[0];
+        currentImageIcon = ImageReader.ALL_PLAYER[whichPlayer-1][0];
         new PlayerLifeControlThread(this).start();
     }
 
@@ -70,7 +70,7 @@ public class Player extends JComponent {
         setLayout(null);
         setSize(GameConstant.SQUARE_SIZE,GameConstant.SQUARE_SIZE);
         setLocation(playerLocation.getX(),playerLocation.getY());
-        currentImageIcon = ImageReader.PLAYER1[0];
+        currentImageIcon = ImageReader.ALL_PLAYER[whichPlayer-1][0];
         new PlayerLifeControlThread(this).start();
     }
 

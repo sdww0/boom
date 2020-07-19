@@ -27,7 +27,7 @@ public class ImageReader {
     public static final ImageIcon[] TREE = {
             new ImageIcon(ImageReader.class.getResource("/game/image/walls/unbreak/tree1.png")),
             new ImageIcon(ImageReader.class.getResource("/game/image/walls/unbreak/tree2.png")),
-            new ImageIcon(ImageReader.class.getResource("/game/image/walls/unbreak/tree3.png")),
+         //   new ImageIcon(ImageReader.class.getResource("/game/image/walls/unbreak/tree3.png")),
     };
     public static final ImageIcon[] PLAYER1 = {
             new ImageIcon(ImageReader.class.getResource("/game/image/player/blue1.png")),
@@ -63,11 +63,12 @@ public class ImageReader {
     public static final ImageIcon RECOVER = new ImageIcon(ImageReader.class.getResource("/game/image/item/recover2.png"));
     public static final ImageIcon MORE_BOMB = new ImageIcon(ImageReader.class.getResource("/game/image/item/MoreBomb.png"));
     public static final ImageIcon AREA_BOMB = new ImageIcon(ImageReader.class.getResource("/game/image/item/Area.png"));
+    public static final ImageIcon SPEED = new ImageIcon(ImageReader.class.getResource("/game/image/item/speed.png"));
 
-    public static final ImageIcon[] ITEM = {MORE_BOMB,AREA_BOMB,RECOVER};
+    public static final ImageIcon[] ITEM = {MORE_BOMB,AREA_BOMB,RECOVER,SPEED};
     public static final ImageIcon[][] ALL_PLAYER = {PLAYER1, PLAYER2, PLAYER3, PLAYER4};
     public static final ImageIcon[] BREAK = {BUILDING[0],BUILDING[1],BUILDING[2],FLOWER[0],FLOWER[1],FLOWER[2],FLOWER[3]};
-    public static final ImageIcon[] UN_BREAK = {TREE[0],TREE[1],TREE[2]};
+    public static final ImageIcon[] UN_BREAK = {TREE[0],TREE[1],/*TREE[2]*/};
     public static final ImageIcon BOMB = new ImageIcon(ImageReader.class.getResource("/game/image/bomb.png"));
     public static final ImageIcon BOOM = new ImageIcon(ImageReader.class.getResource("/game/image/boom.png"));
 

@@ -25,6 +25,7 @@ public class Bomb extends JComponent {
     private int damage;
 
 
+
     public Bomb(int radius, int damage) {
         setLayout(null);
         setSize(GameConstant.SQUARE_SIZE,GameConstant.SQUARE_SIZE);
@@ -40,7 +41,10 @@ public class Bomb extends JComponent {
 
     private void paintBomb(Graphics g){
         g.drawImage(ImageReader.BOMB.getImage(), 0, 0, null);
+
     }
+
+
 
 
     public int getRadius() {

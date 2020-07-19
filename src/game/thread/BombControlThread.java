@@ -15,6 +15,7 @@ import java.util.ArrayList;
  */
 public class BombControlThread implements Runnable{
     private Bomb bomb;
+    private int bombSize;
     private Location location;
     private Player player;
 
@@ -25,7 +26,7 @@ public class BombControlThread implements Runnable{
             /*
             检测自己所处位置是否被标记为设定炸弹爆炸位置
              */
-            for(int n =0;n<50;n++) {
+            for(int n =1;n<=100;n++) {
                 for (Location location1 : GameData.bombExplodedLocation) {
                     if (location1.getX() == location.getX() &&
                             location1.getY() == location.getY()) {
@@ -33,10 +34,12 @@ public class BombControlThread implements Runnable{
                         explode();
                         explode = true;
                     }
+
                 }
-                Thread.sleep(GameConstant.BOMB_SECONDS * 20);
+                Thread.sleep(GameConstant.BOMB_SECONDS * 10);
             }
         } catch (InterruptedException ignore) {
+            //whoCares?
         }
         if(!explode) {
             explode();
@@ -45,6 +48,7 @@ public class BombControlThread implements Runnable{
 
     public BombControlThread(Bomb bomb,Location location,Player player){
         this.bomb = bomb;
+        bombSize = bomb.getRadius();
         this.location = location;
         this.player = player;
     }
@@ -55,9 +59,8 @@ public class BombControlThread implements Runnable{
 
     private void explode(){
         GameData.getBoard().getSquare()[location.getX()][location.getY()].removeAllElement();
-
-            player.getBombs().removeIf(bomb -> this.bomb == bomb);
-            player.getBombs().add(null);
+        player.getBombs().removeIf(bomb -> this.bomb == bomb);
+        player.getBombs().add(null);
         /*
          * n
          * 0上
@@ -70,8 +73,17 @@ public class BombControlThread implements Runnable{
         GameData.getBoard().getSquare()[location.getX()]
                 [location.getY()].setElement(new Boom());
         MusicPlayer.Play(MusicPlayer.BOOM);
+        /*
+         *对于炸弹所在位置进行前置处理
+         */
+        ElementType elementType = GameData.getBoard().getSquare()[location.getX()][location.getY() ].getElementType();
+        GameData.getBoard().getSquare()[location.getX()][location.getY()].setItem(null);
+        if(elementType==ElementType.PLAYER){
+            GameData.getBoard().getSquare()[location.getX()][location.getY()].getPlayer().hurt();
+        }
+
         for (int n = 0; n < 4; n++) {
-            for(int i = 0;i<bomb.getRadius();i++) {
+            for(int i = 0;i<bombSize;i++) {
                 int xChange = 0, yChange = 0;
                 switch (n) {
                     case 0:
@@ -96,16 +108,12 @@ public class BombControlThread implements Runnable{
                         || location.getY() + yChange <= -1 || location.getY() + yChange >= GameConstant.SQUARE_AMOUNT) {
                     continue;
                 }
-                ElementType elementType = GameData.getBoard().getSquare()[location.getX() + xChange]
+                elementType = GameData.getBoard().getSquare()[location.getX() + xChange]
                         [location.getY() + yChange].getElementType();
                 /*
                  如果该位置有物品，则物品消失
                  */
-                if( GameData.getBoard().getSquare()[location.getX() + xChange]
-                        [location.getY() + yChange].getItem()!=null){
-                    GameData.getBoard().getSquare()[location.getX() + xChange]
-                            [location.getY() + yChange].setItem(null);
-                }
+                GameData.getBoard().getSquare()[location.getX() + xChange][location.getY() + yChange].setItem(null);
 
                 boolean canBreak = true;
                 switch(elementType){
@@ -113,10 +121,7 @@ public class BombControlThread implements Runnable{
                         GameData.bombExplodedLocation.add(new Location(location.getX() + xChange, location.getY() + yChange));
                         break;
                     case PLAYER:
-                        MusicPlayer.Play(MusicPlayer.HURT);
-                        Player player = (Player) GameData.getBoard().getSquare()[location.getX() + xChange]
-                                [location.getY() + yChange].getPlayer();
-                        player.setLife(player.getLife() - 1);
+                        GameData.getBoard().getSquare()[location.getX() + xChange][location.getY() + yChange].getPlayer().hurt();
                         break;
                     case BREAKABLE_WALL:
                         locations.add(new Location(location.getX() + xChange
@@ -170,7 +175,7 @@ public class BombControlThread implements Runnable{
             case 6:
             case 7:
             case 8:
-            case 9:
+            case 9:return new Item(Item.SPEED);
             default:return null;
         }
     }

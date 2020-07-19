@@ -1,10 +1,12 @@
 package game.gui;
 
 import game.basement.Location;
+import game.basement.TrueLocation;
 import game.element.ElementType;
 import game.element.Player;
 import game.gamedata.GameConstant;
 import game.gamedata.GameData;
+import game.gamedata.Judge;
 import game.image.ImageReader;
 import game.music.MusicPlayer;
 import game.thread.BombControlThread;
@@ -21,6 +23,11 @@ import java.awt.event.KeyEvent;
 public class GameFrame extends JFrame {
     private Board board;
     private JLayeredPane layeredPane;
+    /**
+     * 防止多个线程运行移动动画
+     */
+    private volatile boolean keyPressedPrevent = true;
+    private volatile boolean keyTypePrevent = true;
 
     public GameFrame(Board board) {
 
@@ -57,55 +64,65 @@ public class GameFrame extends JFrame {
         addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
-
-                GameData.getGameExecutePool().submit(() -> {
-                    super.keyPressed(e);
+                if (keyPressedPrevent) {
+                    keyPressedPrevent = false;
+                    GameData.getGameExecutePool().submit(() -> {
+                        super.keyPressed(e);
                     /*
                     玩家1WASD移动
                     */
-                    if (e.getKeyCode() == KeyEvent.VK_W || e.getKeyCode() == KeyEvent.VK_S || e.getKeyCode() == KeyEvent.VK_A || e.getKeyCode() == KeyEvent.VK_D) {
-                        movePosition(e.getKeyCode(), true);
-                    }
+                        if (e.getKeyCode() == KeyEvent.VK_W || e.getKeyCode() == KeyEvent.VK_S || e.getKeyCode() == KeyEvent.VK_A || e.getKeyCode() == KeyEvent.VK_D) {
+                            movePosition(e.getKeyCode(), true);
+                        }
                     /*
                      玩家2方向键移动
                      */
-                    else if (e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_DOWN || e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_RIGHT) {
-                        movePosition(e.getKeyCode(), false);
+                        else if (e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_DOWN || e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_RIGHT) {
+                            movePosition(e.getKeyCode(), false);
 
-                    }
+                        }
                     /*
                     玩家1/玩家2放置炸弹
                      */
-                    else if (e.getKeyCode() == KeyEvent.VK_SPACE) {
-                        placeBomb(true);
-                    } else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                        placeBomb(false);
-                    }
-                });
-
+                        else if (e.getKeyCode() == KeyEvent.VK_SPACE) {
+                            placeBomb(true);
+                        } else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                            placeBomb(false);
+                        }
+                        keyPressedPrevent = true;
+                    });
+                }
             }
+
+            @Override
+            public void keyTyped(KeyEvent e) {
+                if (keyTypePrevent) {
+                    keyTypePrevent = false;
+                    GameData.getGameExecutePool().submit(() -> {
+                        super.keyPressed(e);
+                    /*
+                    玩家1WASD移动
+                    */
+                        if (e.getKeyCode() == KeyEvent.VK_W || e.getKeyCode() == KeyEvent.VK_S || e.getKeyCode() == KeyEvent.VK_A || e.getKeyCode() == KeyEvent.VK_D) {
+                            movePosition(e.getKeyCode(), true);
+                        }
+                    /*
+                     玩家2方向键移动
+                     */
+                        else if (e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_DOWN || e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_RIGHT) {
+                            movePosition(e.getKeyCode(), false);
+                        }
+                        keyTypePrevent = true;
+                    });
+                }
+            }
+
         });
 
         requestFocus();
         setLayeredPane(layeredPane);
     }
 
-    private void reactPickUpItem(Location location) {
-        MusicPlayer.Play(MusicPlayer.PICKUP);
-        switch (GameData.getBoard().getSquare()[location.getX()][location.getY()].getItem().getType()) {
-            case 1:
-                GameData.player1.getBombs().add(null);
-                break;
-            case 2:
-                GameData.player1.getBomb().setRadius(GameData.player1.getBomb().getRadius() + 1);
-                break;
-            case 3:
-                GameData.player1.setLife(GameData.player1.getLife() + 1);
-                break;
-            default:
-        }
-        GameData.getBoard().getSquare()[location.getX()][location.getY()].setItem(null);
-    }
 
     public void init() {
         layeredPane.add(GameData.getRightMenu(), JLayeredPane.MODAL_LAYER);
@@ -117,7 +134,7 @@ public class GameFrame extends JFrame {
      * @param keyCode
      * @param isPlayer1
      */
-    private void movePosition(int keyCode, boolean isPlayer1) {
+    private synchronized void movePosition(int keyCode, boolean isPlayer1) {
         Player player = null;
         if (isPlayer1) {
             player = GameData.player1;
@@ -131,30 +148,42 @@ public class GameFrame extends JFrame {
         /*
         根据keyCode移动位置
          */
-
+        int maxAccess = 16;
         if (keyCode == KeyEvent.VK_W || keyCode == KeyEvent.VK_UP) {
             yChange = -1 * player.getSpeed();
             player.setCurrentImageIcon(ImageReader.ALL_PLAYER[player.getWhichPlayer() - 1][1]);
-            if (player.getPlayerLocation().getX() % GameConstant.SQUARE_SIZE != 0) {
+            if (player.getPlayerLocation().getX() % GameConstant.SQUARE_SIZE >= maxAccess &&
+                    player.getPlayerLocation().getX() % GameConstant.SQUARE_SIZE <= GameConstant.SQUARE_SIZE - maxAccess) {
                 return;
+            } else {
+                player.getPlayerLocation().setX(Math.round(player.getPlayerLocation().getX() / (float) GameConstant.SQUARE_SIZE) * GameConstant.SQUARE_SIZE);
             }
         } else if (keyCode == KeyEvent.VK_S || keyCode == KeyEvent.VK_DOWN) {
             yChange = player.getSpeed();
             player.setCurrentImageIcon(ImageReader.ALL_PLAYER[player.getWhichPlayer() - 1][0]);
-            if (player.getPlayerLocation().getX() % GameConstant.SQUARE_SIZE != 0) {
+            if (player.getPlayerLocation().getX() % GameConstant.SQUARE_SIZE >= maxAccess &&
+                    player.getPlayerLocation().getX() % GameConstant.SQUARE_SIZE <= GameConstant.SQUARE_SIZE - maxAccess) {
                 return;
+            } else {
+                player.getPlayerLocation().setX(Math.round(player.getPlayerLocation().getX() / (float) GameConstant.SQUARE_SIZE) * GameConstant.SQUARE_SIZE);
             }
         } else if (keyCode == KeyEvent.VK_A || keyCode == KeyEvent.VK_LEFT) {
             xChange = -1 * player.getSpeed();
             player.setCurrentImageIcon(ImageReader.ALL_PLAYER[player.getWhichPlayer() - 1][3]);
-            if (player.getPlayerLocation().getY() % GameConstant.SQUARE_SIZE != 0) {
+            if (player.getPlayerLocation().getY() % GameConstant.SQUARE_SIZE >= maxAccess &&
+                    player.getPlayerLocation().getY() % GameConstant.SQUARE_SIZE <= GameConstant.SQUARE_SIZE - maxAccess) {
                 return;
+            } else {
+                player.getPlayerLocation().setY(Math.round(player.getPlayerLocation().getY() / (float) GameConstant.SQUARE_SIZE) * GameConstant.SQUARE_SIZE);
             }
         } else if (keyCode == KeyEvent.VK_D || keyCode == KeyEvent.VK_RIGHT) {
             xChange = player.getSpeed();
             player.setCurrentImageIcon(ImageReader.ALL_PLAYER[player.getWhichPlayer() - 1][2]);
-            if (player.getPlayerLocation().getY() % GameConstant.SQUARE_SIZE != 0) {
+            if (player.getPlayerLocation().getY() % GameConstant.SQUARE_SIZE >= maxAccess &&
+                    player.getPlayerLocation().getY() % GameConstant.SQUARE_SIZE <= GameConstant.SQUARE_SIZE - maxAccess) {
                 return;
+            } else {
+                player.getPlayerLocation().setY(Math.round(player.getPlayerLocation().getY() / (float) GameConstant.SQUARE_SIZE) * GameConstant.SQUARE_SIZE);
             }
         } else {
             return;
@@ -162,14 +191,25 @@ public class GameFrame extends JFrame {
         /*
          * 限制位置
          */
-        if (player.getPlayerLocation().getX() + xChange <= -1 || player.getPlayerLocation().getX() + xChange >= GameConstant.BOARD_SIZE
-                || player.getPlayerLocation().getY() + yChange <= -1 || player.getPlayerLocation().getY() + yChange >= GameConstant.BOARD_SIZE) {
-            return;
-        }
+
+
+        player.setPlayerLocation(new TrueLocation(player.getPlayerLocation().getX() + xChange, player.getPlayerLocation().getY() + yChange));
+
+
+
+
+
+
+
+
+
+
+
+
         /*
-        是否是可以移动到目标位置
+            老版
          */
-        int canMoveX = 0;
+       /* int canMoveX = 0;
         int canMoveY = 0;
         if (xChange > 0 || yChange > 0) {
             canMoveX = (int) (Math.ceil((player.getPlayerLocation().getX() + xChange) / (double) GameConstant.SQUARE_SIZE));
@@ -191,24 +231,45 @@ public class GameFrame extends JFrame {
 
         if (isValid) {
             if (board.getSquare()[finalX][finalY].getItem() != null) {
-                reactPickUpItem(new Location(finalX, finalY));
+                reactPickUpItem(new Location(finalX, finalY),player);
             }
             switch (elementType) {
+                case PLAYER:
+                    player.moveXAndYPosition(xChange, yChange);
+                break;
                 case NULL:
+                    player.moveXAndYPosition(xChange, yChange);
                     board.getSquare()[Math.round(player.getPlayerLocation().getX() / (float) GameConstant.SQUARE_SIZE)]
                             [Math.round(player.getPlayerLocation().getY() / (float) GameConstant.SQUARE_SIZE)].setPlayer(null);
                     board.getSquare()[finalX][finalY].setPlayer(player);
                     break;
-                case PLAYER:
-                    break;
                 default:
                     throw new IllegalArgumentException("error, location:GameFrame");
             }
-            player.moveXAndYPosition(xChange, yChange);
-        }
+
+        }else{
+            if(xChange!=0){
+                xChange/=Math.abs(xChange);
+                if((player.getSpeed()+player.getPlayerLocation().getX()%GameConstant.SQUARE_SIZE)>=GameConstant.SQUARE_SIZE||
+                        (player.getPlayerLocation().getX()%GameConstant.SQUARE_SIZE-player.getSpeed())<=0){
+                    player.setPlayerLocation(Location.changeToTrueLocation(new Location(canMoveX-xChange,canMoveY)));
+                    board.getSquare()[player.getLastLocation().getX()][player.getLastLocation().getY()].setPlayer(null);
+                    board.getSquare()[player.getVirtualLocation().getX()][player.getVirtualLocation().getY()].setPlayer(player);
+                }
+            }
+            if(yChange!=0){
+                yChange/=Math.abs(yChange);
+                if((player.getSpeed()+player.getPlayerLocation().getY()%GameConstant.SQUARE_SIZE)>=GameConstant.SQUARE_SIZE||
+                        (player.getPlayerLocation().getY()%GameConstant.SQUARE_SIZE-player.getSpeed())<=0){
+                    player.setPlayerLocation(Location.changeToTrueLocation(new Location(canMoveX,canMoveY-yChange)));
+                    board.getSquare()[player.getLastLocation().getX()][player.getLastLocation().getY()].setPlayer(null);
+                    board.getSquare()[player.getVirtualLocation().getX()][player.getVirtualLocation().getY()].setPlayer(player);
+                }
+            }
+        }*/
     }
 
-    private void placeBomb(boolean isPlayer1) {
+    private synchronized void placeBomb(boolean isPlayer1) {
         Player player = null;
         if (isPlayer1) {
             player = GameData.player1;
@@ -218,7 +279,10 @@ public class GameFrame extends JFrame {
             }
             player = GameData.player2;
         }
-
+        if (board.getSquare()[player.getVirtualLocation().getX()]
+                [player.getVirtualLocation().getY()].getElement() != null) {
+            return;
+        }
         boolean enoughBombs = false;
         int place = 0;
         for (int n = 0; n < player.getBombs().size(); n++) {
@@ -233,15 +297,14 @@ public class GameFrame extends JFrame {
             MusicPlayer.Play(MusicPlayer.PLACE);
             player.getBombs().remove(place);
             player.getBombs().add(place, player.getBomb());
-            board.getSquare()[player.getPlayerLocation().changeToVirtualLocation().getX()]
-                    [player.getPlayerLocation().changeToVirtualLocation().getY()].setElement(player.getBomb());
+            board.getSquare()[player.getVirtualLocation().getX()][player.getVirtualLocation().getY()].setElement(player.getBomb());
+
             GameData.getBombControlThreadPool().submit(new BombControlThread(player.getBomb(),
-                    new Location(player.getPlayerLocation().changeToVirtualLocation().getX(), player.getPlayerLocation().changeToVirtualLocation().getY()),
+                    new Location(player.getVirtualLocation().getX(), player.getVirtualLocation().getY()),
                     player));
         }
 
     }
-
 
     @Override
     public JLayeredPane getLayeredPane() {

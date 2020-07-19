@@ -37,4 +37,7 @@ public class Location {
         return new TrueLocation(GameConstant.SQUARE_SIZE*location.getX(),GameConstant.SQUARE_SIZE*location.getY());
     }
 
+    public TrueLocation changeToTrueLocation(){
+        return new TrueLocation(GameConstant.SQUARE_SIZE*x,GameConstant.SQUARE_SIZE*y);
+    }
 }

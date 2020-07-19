@@ -43,7 +43,8 @@ public class TrueLocation {
     }
 
     public static Location changeToVirtualLocation(TrueLocation trueLocation){
-        return new Location(trueLocation.getX()/ GameConstant.SQUARE_SIZE,trueLocation.getY()/GameConstant.SQUARE_SIZE);
+        return new Location(Math.round(trueLocation.getX()/ (float)GameConstant.SQUARE_SIZE),Math.round(trueLocation.getY()/ (float)GameConstant.SQUARE_SIZE));
+
     }
 
 }

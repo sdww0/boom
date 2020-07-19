@@ -6,6 +6,7 @@ import game.gamedata.GameConstant;
 import game.gamedata.GameData;
 
 import javax.swing.*;
+import java.util.Arrays;
 
 /**
  * swing游戏面板
@@ -53,5 +54,18 @@ public class Board extends JComponent {
 
     public void setSquare(Square[][] square) {
         this.square = square;
+    }
+
+
+    @Override
+    public String toString() {
+        StringBuilder stringBuilder = new StringBuilder();
+        for(int n = 0 ;n<square.length;n++){
+            for(int i =0;i<square[n].length;i++){
+                stringBuilder.append(square[n][i].toString()).append(" ");
+            }
+            stringBuilder.append("\n");
+        }
+        return stringBuilder.toString();
     }
 }

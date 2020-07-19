@@ -14,6 +14,7 @@ public class Item extends JComponent {
     public static final int BOMB_AMOUNT = 1;
     public static final int BOMB_AREA = 2;
     public static final int CURE = 3;
+    public static final int SPEED = 4;
     /**
      * 道具类型
      * 1：提升炸弹数量

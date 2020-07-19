@@ -25,6 +25,7 @@ public class PlayerStatus extends JComponent {
         playerStatus[0].setText("1");
         playerStatus[1].setText(GameData.playersLife+"");
         playerStatus[2].setText("1");
+        playerStatus[3].setText("1");
 
         playerStatus[0].setBounds(102,128,20,20);
         playerStatus[1].setBounds(203,5,70,36);

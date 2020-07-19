@@ -30,18 +30,17 @@ public class Main {
         GameData.init();
         MusicPlayer.init();
 
-        GameFrame mainFrame = new GameFrame(GameData.getBoard());
         //测试添加玩家用
         Player player1 = new Player(GameConstant.FIRST_PLAYER,new TrueLocation(0,0),new Bomb(1,1), GameData.playersLife,true);
         GameData.player1 = player1;
-        mainFrame.getLayeredPane().add(player1, JLayeredPane.POPUP_LAYER);
+        GameData.getMainFrame().getLayeredPane().add(player1, JLayeredPane.POPUP_LAYER);
 
         Player player2 = new Player(GameConstant.SECOND_PLAYER,Location.changeToTrueLocation(new Location(15,0)),new Bomb(1,1),GameData.playersLife,false);
         GameData.player2 = player2;
-        mainFrame.getLayeredPane().add(player2,JLayeredPane.POPUP_LAYER);
+        GameData.getMainFrame().getLayeredPane().add(player2,JLayeredPane.POPUP_LAYER);
 
-        mainFrame.init();
-        mainFrame.setVisible(true);
+        GameData.getMainFrame().init();
+        GameData.getMainFrame().setVisible(true);
     }
 
 

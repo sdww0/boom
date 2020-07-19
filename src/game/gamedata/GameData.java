@@ -3,6 +3,7 @@ package game.gamedata;
 import game.basement.Location;
 import game.element.Player;
 import game.gui.Board;
+import game.gui.GameFrame;
 import game.gui.RightMenu;
 import game.map.MapList;
 
@@ -26,6 +27,7 @@ public class GameData {
 
     private static Board board = null;
     private static RightMenu rightMenu = null;
+    private static GameFrame mainFrame = null;
     private static ThreadPoolExecutor bombControlThreadPool = new ThreadPoolExecutor(20,40,
             GameConstant.BOMB_SECONDS+1, TimeUnit.SECONDS,new ArrayBlockingQueue<Runnable>(20));
     private static ThreadPoolExecutor GameExecutePool = new ThreadPoolExecutor(20,40,
@@ -41,7 +43,7 @@ public class GameData {
 
 
     public static int playersLife = 5;
-    public static int playersDefaultSpeed = 10;
+    public static int playersDefaultSpeed = 3;
 
     public static int[][] getMap() {
         return map;
@@ -75,7 +77,12 @@ public class GameData {
         playersLife = 5;
         player1 = null;
         player2 = null;
+        mainFrame = new GameFrame(board);
 
+    }
+
+    public static GameFrame getMainFrame() {
+        return mainFrame;
     }
 
     public static ThreadPoolExecutor getGameExecutePool() {

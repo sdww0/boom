@@ -1,16 +1,16 @@
 package game.element;
 
-import com.sun.corba.se.impl.orbutil.graph.Graph;
 import game.basement.Location;
 import game.basement.TrueLocation;
 import game.gamedata.GameConstant;
 import game.gamedata.GameData;
+import game.gamedata.Judge;
 import game.image.ImageReader;
-import game.thread.PlayerLifeControlThread;
+import game.music.MusicPlayer;
+import game.thread.PlayerStatusUpdateThread;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.geom.Ellipse2D;
 import java.util.ArrayList;
 
 /**
@@ -43,10 +43,15 @@ public class Player extends JComponent {
     private ImageIcon currentImageIcon;
     private int whichPlayer;
     private boolean isPlayer1;
+    private Location virtualLocation;
+    private Location lastLocation;
+
+
 
     public Player(int whichPlayer, TrueLocation playerLocation, Bomb bomb, float life, boolean isPlayer1) {
         this.whichPlayer = whichPlayer;
         this.playerLocation = playerLocation;
+        lastLocation = virtualLocation = playerLocation.changeToVirtualLocation();
         this.bombs = new ArrayList<Bomb>();
         this.bombs.add(null);
         this.bomb = bomb;
@@ -57,21 +62,7 @@ public class Player extends JComponent {
         setSize(GameConstant.SQUARE_SIZE,GameConstant.SQUARE_SIZE);
         setLocation(playerLocation.getX(),playerLocation.getY());
         currentImageIcon = ImageReader.ALL_PLAYER[whichPlayer-1][0];
-        new PlayerLifeControlThread(this).start();
-    }
-
-    public Player(Bomb bomb, float life,boolean isPlayer1) {
-        this.bombs = new ArrayList<Bomb>();
-        this.bombs.add(null);
-        this.bomb = bomb;
-        this.life = GameData.playersLife;
-        this.isPlayer1 = isPlayer1;
-        this.speed = GameData.playersDefaultSpeed;
-        setLayout(null);
-        setSize(GameConstant.SQUARE_SIZE,GameConstant.SQUARE_SIZE);
-        setLocation(playerLocation.getX(),playerLocation.getY());
-        currentImageIcon = ImageReader.ALL_PLAYER[whichPlayer-1][0];
-        new PlayerLifeControlThread(this).start();
+        new PlayerStatusUpdateThread(this).start();
     }
 
     @Override
@@ -90,21 +81,130 @@ public class Player extends JComponent {
         paintPlayer(g);
     }
 
-
-
     public TrueLocation getPlayerLocation() {
         return playerLocation;
     }
 
-    public void setPlayerLocation(TrueLocation playerLocation) {
-        this.playerLocation = playerLocation;
+    public synchronized void setPlayerLocation(TrueLocation playerLocation) {
+        TrueLocation finalLocation = showAnimation(this.playerLocation,playerLocation);
+        lastLocation = new Location(virtualLocation.getX(), virtualLocation.getY());
+        this.playerLocation = finalLocation;
+        virtualLocation = new Location(Math.round(this.playerLocation.getX()/(float)GameConstant.SQUARE_SIZE),
+                Math.round(this.playerLocation.getY()/(float)GameConstant.SQUARE_SIZE));
+        if(lastLocation.getX()!=virtualLocation.getX()||lastLocation.getY()!=virtualLocation.getY()){
+            GameData.getBoard().getSquare()[lastLocation.getX()][lastLocation.getY()].setPlayer(null);
+            GameData.getBoard().getSquare()[virtualLocation.getX()][virtualLocation.getY()].setPlayer(this);
+        }
+        setLocation(finalLocation.getX(),finalLocation.getY());
     }
 
-    public void moveXAndYPosition(int deltaX,int deltaY){
-        this.playerLocation.setX(this.playerLocation.getX()+deltaX);
-        this.playerLocation.setY(this.playerLocation.getY()+deltaY);
+    public Location getVirtualLocation() {
+        return virtualLocation;
+    }
+
+    public Location getLastLocation() {
+        return lastLocation;
+    }
+
+    public void moveXAndYPosition(int deltaX, int deltaY){
+        TrueLocation finalLocation = showAnimation(playerLocation,new TrueLocation(this.playerLocation.getX()+deltaX,this.playerLocation.getY()+deltaY));
+        lastLocation = new Location(Math.round(this.playerLocation.getX()/(float)GameConstant.SQUARE_SIZE),
+                Math.round(this.playerLocation.getY()/(float)GameConstant.SQUARE_SIZE));
+        this.playerLocation.setX(finalLocation.getX()+deltaX);
+        this.playerLocation.setY(finalLocation.getY()+deltaY);
+        virtualLocation = new Location(Math.round(this.playerLocation.getX()/(float)GameConstant.SQUARE_SIZE),
+                Math.round(this.playerLocation.getY()/(float)GameConstant.SQUARE_SIZE));
         setLocation(playerLocation.getX(),playerLocation.getY());
-        repaint();
+    }
+
+    /**
+     * 表演动画\
+     * 如果在中途取消播放，则返回一个终止的位置
+     * @param lastLocation 之前位置
+     * @param targetLocation 目标位置
+     * @return 中断后的位置
+     */
+    private TrueLocation showAnimation(TrueLocation lastLocation,TrueLocation targetLocation){
+        int xChange = 0, yChange = 0;
+        int different = 0;
+        if(targetLocation.getX()-lastLocation.getX()!=0){
+            xChange = (targetLocation.getX()-lastLocation.getX())/
+                    Math.abs(targetLocation.getX()-lastLocation.getX());
+            different = Math.abs(targetLocation.getX()-lastLocation.getX());
+        }else if(targetLocation.getY()-lastLocation.getY()!=0){
+            yChange = (targetLocation.getY()-lastLocation.getY())/
+                    Math.abs(targetLocation.getY()-lastLocation.getY());
+            different = Math.abs(targetLocation.getY()-lastLocation.getY());
+        }
+        int canMoveX = 0;
+        int canMoveY = 0;
+        TrueLocation location = new TrueLocation(lastLocation.getX(),lastLocation.getY());
+        for(int n =0;n<different;n++){
+
+            if (location.getX()+xChange <= -1 || location.getX()+xChange >= GameConstant.BOARD_SIZE
+                    || location.getY() + yChange <= -1 || location.getY() + yChange >= GameConstant.BOARD_SIZE) {
+                break;
+            }
+            if (xChange > 0 || yChange > 0) {
+                canMoveX = (int) (Math.ceil((location.getX() + xChange) / (double) GameConstant.SQUARE_SIZE));
+                canMoveY = (int) (Math.ceil((location.getY() + yChange) / (double) GameConstant.SQUARE_SIZE));
+            } else {
+                canMoveX = (int) (Math.floor((location.getX() + xChange) / (double) GameConstant.SQUARE_SIZE));
+                canMoveY = (int) (Math.floor((location.getY() + yChange) / (double) GameConstant.SQUARE_SIZE));
+            }
+            if (canMoveX <= -1 || canMoveX >= GameConstant.SQUARE_AMOUNT
+                    || canMoveY <= -1 || canMoveY >= GameConstant.SQUARE_AMOUNT) {
+                break;
+            }
+            ElementType elementType = GameData.getBoard().getSquare()[canMoveX][canMoveY].getElementType();
+            if(!(elementType== ElementType.NULL||elementType==ElementType.PLAYER)){
+                break;
+            }
+            if (GameData.getBoard().getSquare()[canMoveX][canMoveY].getItem() != null) {
+                reactPickUpItem(new Location(canMoveX, canMoveY));
+            }
+
+
+            setLocation(location.getX()+xChange,location.getY()+yChange);
+            location.setY(location.getY()+yChange);
+            location.setX(location.getX()+xChange);
+
+            try {
+                Thread.sleep(2);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        return location;
+    }
+
+    private void reactPickUpItem(Location location) {
+        MusicPlayer.Play(MusicPlayer.PICKUP);
+        switch (GameData.getBoard().getSquare()[location.getX()][location.getY()].getItem().getType()) {
+            case 1:
+                bombs.add(null);
+                break;
+            case 2:
+                bomb.setRadius(bomb.getRadius() + 1);
+                break;
+            case 3:
+                life+=1;
+                break;
+            case 4:
+                if(speed>10){
+                    break;
+                }
+                speed+=1;
+                break;
+            default:
+        }
+        GameData.getBoard().getSquare()[location.getX()][location.getY()].setItem(null);
+    }
+
+
+    public void setVirtualLocation(Location virtualLocation) {
+        this.lastLocation = this.virtualLocation;
+        this.virtualLocation = virtualLocation;
     }
 
     public ArrayList<Bomb> getBombs() {
@@ -155,4 +255,10 @@ public class Player extends JComponent {
     public void setSpeed(int speed) {
         this.speed = speed;
     }
+
+    public void hurt(){
+        MusicPlayer.Play(MusicPlayer.HURT);
+        life--;
+    }
+
 }

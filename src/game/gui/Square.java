@@ -75,7 +75,6 @@ public class Square extends JPanel {
     }
 
     /**
-     * 注意！！调用此方法前必须用getElementType获得样式
      * @return 含有的element
      */
     public Object getElement(){
@@ -91,6 +90,7 @@ public class Square extends JPanel {
             if(this.item!=null){
                 remove(this.item);
                 this.item = null;
+                repaint();
             }
         }else {
             if (this.item != null) {
@@ -136,5 +136,15 @@ public class Square extends JPanel {
 
     public void setPlayer(Player player) {
         this.player = player;
+    }
+
+    @Override
+    public String toString() {
+        if(player!=null){
+            return "1";
+        }else {
+            return "0";
+        }
+
     }
 }

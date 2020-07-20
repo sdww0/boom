@@ -2,6 +2,7 @@ package game.robot;
 
 
 import game.element.Player;
+import game.element.Robot;
 import game.statemachine.StateMachine;
 import game.statemachine.robot.NormalState;
 import game.statemachine.robot.RunState;
@@ -14,7 +15,7 @@ public class RobotController {
     /**
      * 机器人属性
      */
-    private Player robot;
+    private Robot robot;
     /**
      * 机器人状态机
      * 初步构想：状态包含
@@ -28,7 +29,7 @@ public class RobotController {
     private int robotLife;
 
 
-    public RobotController(Player robot){
+    public RobotController(Robot robot){
         this.robot = robot;
         init();
     }
@@ -42,7 +43,7 @@ public class RobotController {
         robotLife = robot.getLife();
     }
 
-    public Player getRobot() {
+    public Robot getRobot() {
         return robot;
     }
 

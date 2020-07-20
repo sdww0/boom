@@ -20,6 +20,7 @@ public class GameConstant {
     public static final int BOARD_SIZE = 640;
     public static final int SQUARE_AMOUNT = 16;
     public static final int SQUARE_SIZE = BOARD_SIZE/SQUARE_AMOUNT;
+    public static final int MAX_SPEED = 5;
 
     public static final int PLAYER_BOOM_RADIUS_TYPE = 0;
     public static final int PLAYER_LIFE_TYPE = 1;

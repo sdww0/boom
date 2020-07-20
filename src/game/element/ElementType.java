@@ -57,6 +57,7 @@ public enum ElementType {
             case BOMB:return BOMB_NUMBER;
             case PLAYER:return PLAYER_NUMBER;
             case BOOM:return BOOM_NUMBER;
+
             default:throw new IllegalArgumentException("wrong number location:ElementType");
         }
     }

@@ -58,7 +58,7 @@ public class GameData {
 
 
     public static int playersLife = 5;
-    public static int playersDefaultSpeed = 3;
+    public static int playersDefaultSpeed = 1;
 
     public static int[][] getMap() {
         return map;

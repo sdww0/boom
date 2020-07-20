@@ -15,6 +15,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.util.HashMap;
+import java.util.HashSet;
 
 /**
  * swing游戏框架
@@ -28,9 +30,10 @@ public class GameFrame extends JFrame {
      */
     private volatile boolean keyPressedPrevent = true;
     private volatile boolean keyTypePrevent = true;
+    public volatile HashSet<Integer> check ;
 
     public GameFrame(Board board) {
-
+        check = new HashSet<>();
         layeredPane = new JLayeredPane();
 
         setTitle("!Boom!");
@@ -64,68 +67,104 @@ public class GameFrame extends JFrame {
         addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
-                if (keyPressedPrevent) {
-                    keyPressedPrevent = false;
+                if(!check.contains(e.getKeyCode())){
+                    check.add(e.getKeyCode());
+                }
+
+
+
+           /*     if (keyPressedPrevent) {
+             //       keyPressedPrevent = false;
                     GameData.getGameExecutePool().submit(() -> {
                         super.keyPressed(e);
                     /*
                     玩家1WASD移动
-                    */
+                    /
                         if (e.getKeyCode() == KeyEvent.VK_W || e.getKeyCode() == KeyEvent.VK_S || e.getKeyCode() == KeyEvent.VK_A || e.getKeyCode() == KeyEvent.VK_D) {
-                            movePosition(e.getKeyCode(), true);
-                        }
-                    /*
-                     玩家2方向键移动
-                     */
-                        else if (e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_DOWN || e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_RIGHT) {
-                            movePosition(e.getKeyCode(), false);
+                            checkPlayer1();
+                            checkPlayer2();
+                            checkBomb();
+                            if(!check.contains(e.getKeyCode())){
+                                sendTask(e.getKeyCode(), true);
+                                check.add(e.getKeyCode());
+                            }
 
                         }
                     /*
-                    玩家1/玩家2放置炸弹
-                     */
-                        else if (e.getKeyCode() == KeyEvent.VK_SPACE) {
-                            placeBomb(true);
-                        } else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                            placeBomb(false);
+                     玩家2方向键移动
+                     /
+                        else if (e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_DOWN || e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_RIGHT) {
+                            checkPlayer1();
+                            checkPlayer2();
+                            checkBomb();
+                            if(!check.contains(e.getKeyCode())){
+                                sendTask(e.getKeyCode(), false);
+                                check.add(e.getKeyCode());
+                            }
                         }
-                        keyPressedPrevent = true;
+                        else if (e.getKeyCode() == KeyEvent.VK_SPACE) {
+                            checkPlayer1();
+                            checkPlayer2();
+                            checkBomb();
+                            if(!check.contains(e.getKeyCode())){
+                                placeBomb(true);
+                                check.add(e.getKeyCode());
+                            }
+                        } else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                            checkPlayer1();
+                            checkPlayer2();
+                            checkBomb();
+                            if(!check.contains(e.getKeyCode())){
+                                placeBomb(false);
+                                check.add(e.getKeyCode());
+                            }
+                        }
+
+                 //       keyPressedPrevent = true;
                     });
-                }
+             //   }*/
             }
 
             @Override
-            public void keyTyped(KeyEvent e) {
-                if (keyTypePrevent) {
-                    keyTypePrevent = false;
-                    GameData.getGameExecutePool().submit(() -> {
-                        super.keyPressed(e);
-                    /*
-                    玩家1WASD移动
-                    */
-                        if (e.getKeyCode() == KeyEvent.VK_W || e.getKeyCode() == KeyEvent.VK_S || e.getKeyCode() == KeyEvent.VK_A || e.getKeyCode() == KeyEvent.VK_D) {
-                            movePosition(e.getKeyCode(), true);
-                        }
-                    /*
-                     玩家2方向键移动
-                     */
-                        else if (e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_DOWN || e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_RIGHT) {
-                            movePosition(e.getKeyCode(), false);
-                        }
-                        keyTypePrevent = true;
-                    });
-                }
+            public void keyReleased(KeyEvent e) {
+                super.keyReleased(e);
+                check.remove(e.getKeyCode());
+
             }
 
         });
+
 
         requestFocus();
         setLayeredPane(layeredPane);
     }
 
-
     public void init() {
         layeredPane.add(GameData.getRightMenu(), JLayeredPane.MODAL_LAYER);
+    }
+
+    public void sendTask(int keyCode, boolean isPlayer1){
+        if(isPlayer1){
+            if(keyCode==KeyEvent.VK_SPACE){
+                placeBomb(true);
+                return;
+            }
+            sendTaskToPlayer1(keyCode);
+        }else{
+            if(keyCode==KeyEvent.VK_ENTER){
+                placeBomb(false);
+                return;
+            }
+            sendTaskToPlayer2(keyCode);
+        }
+    }
+
+    private synchronized void sendTaskToPlayer1(int keyCode){
+        movePosition(keyCode,true);
+    }
+
+    private synchronized void sendTaskToPlayer2(int keyCode){
+        movePosition(keyCode,false);
     }
 
     /**
@@ -134,7 +173,7 @@ public class GameFrame extends JFrame {
      * @param keyCode
      * @param isPlayer1
      */
-    private synchronized void movePosition(int keyCode, boolean isPlayer1) {
+    private void movePosition(int keyCode, boolean isPlayer1) {
         Player player = null;
         if (isPlayer1) {
             player = GameData.player1;
@@ -150,7 +189,7 @@ public class GameFrame extends JFrame {
          */
         int maxAccess = 16;
         if (keyCode == KeyEvent.VK_W || keyCode == KeyEvent.VK_UP) {
-            yChange = -1 * player.getSpeed();
+            yChange = -1*player.getSpeed() ;
             player.setCurrentImageIcon(ImageReader.ALL_PLAYER[player.getWhichPlayer() - 1][1]);
             if (player.getPlayerLocation().getX() % GameConstant.SQUARE_SIZE >= maxAccess &&
                     player.getPlayerLocation().getX() % GameConstant.SQUARE_SIZE <= GameConstant.SQUARE_SIZE - maxAccess) {

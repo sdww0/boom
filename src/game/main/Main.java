@@ -33,10 +33,12 @@ public class Main {
         //测试添加玩家用
         Player player1 = new Player(GameConstant.FIRST_PLAYER,GameConstant.FIRST_POSITION.changeToTrueLocation(),new Bomb(1,1),true);
         GameData.player1 = player1;
+        player1.init();
         GameData.getMainFrame().getLayeredPane().add(player1, JLayeredPane.POPUP_LAYER);
 
         Player player2 = new Player(GameConstant.SECOND_PLAYER,GameConstant.SECOND_POSITION.changeToTrueLocation(),new Bomb(1,1),false);
         GameData.player2 = player2;
+        player2.init();
         GameData.getMainFrame().getLayeredPane().add(player2,JLayeredPane.POPUP_LAYER);
 
         GameData.getMainFrame().init();

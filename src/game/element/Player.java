@@ -8,10 +8,12 @@ import game.gamedata.GameData;
 import game.gamedata.Judge;
 import game.image.ImageReader;
 import game.music.MusicPlayer;
+import game.thread.PlayerMovePlaceBombThread;
 import game.thread.PlayerStatusUpdateThread;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 
 /**
@@ -44,6 +46,7 @@ public class Player extends JComponent {
     private ImageIcon currentImageIcon;
     private int whichPlayer;
     private boolean isPlayer1;
+    private boolean isRobot;
     private Location virtualLocation;
     private Location lastLocation;
 
@@ -54,10 +57,18 @@ public class Player extends JComponent {
         this.playerLocation = playerLocation;
         this.bomb = bomb;
         this.isPlayer1 = isPlayer1;
-        init();
+        this.isRobot = false;
     }
 
-    private void init(){
+    protected Player(int whichPlayer, TrueLocation playerLocation, Bomb bomb){
+        this.whichPlayer = whichPlayer;
+        this.playerLocation = playerLocation;
+        this.bomb = bomb;
+        this.isPlayer1 = false;
+        this.isRobot = true;
+    }
+
+    public void init(){
         lastLocation = virtualLocation = playerLocation.changeToVirtualLocation();
         this.bombs = new ArrayList<Bomb>();
         this.bombs.add(null);
@@ -68,6 +79,22 @@ public class Player extends JComponent {
         currentImageIcon = ImageReader.ALL_PLAYER[whichPlayer-1][0];
         this.speed = GameData.playersDefaultSpeed;
         new PlayerStatusUpdateThread(this).start();
+        if(!isRobot) {
+            if (isPlayer1) {
+                new PlayerMovePlaceBombThread(KeyEvent.VK_W, true).start();
+                new PlayerMovePlaceBombThread(KeyEvent.VK_S, true).start();
+                new PlayerMovePlaceBombThread(KeyEvent.VK_A, true).start();
+                new PlayerMovePlaceBombThread(KeyEvent.VK_D, true).start();
+                new PlayerMovePlaceBombThread(KeyEvent.VK_SPACE, true).start();
+            } else {
+                new PlayerMovePlaceBombThread(KeyEvent.VK_UP, false).start();
+                new PlayerMovePlaceBombThread(KeyEvent.VK_DOWN, false).start();
+                new PlayerMovePlaceBombThread(KeyEvent.VK_LEFT, false).start();
+                new PlayerMovePlaceBombThread(KeyEvent.VK_RIGHT, false).start();
+                new PlayerMovePlaceBombThread(KeyEvent.VK_ENTER, false).start();
+            }
+        }
+
     }
 
     @Override
@@ -90,7 +117,7 @@ public class Player extends JComponent {
         return playerLocation;
     }
 
-    public synchronized void setPlayerLocation(TrueLocation playerLocation) {
+    public void setPlayerLocation(TrueLocation playerLocation) {
         TrueLocation finalLocation = showAnimation(this.playerLocation,playerLocation);
         lastLocation = new Location(virtualLocation.getX(), virtualLocation.getY());
         this.playerLocation = finalLocation;
@@ -182,7 +209,7 @@ public class Player extends JComponent {
             location.setX(location.getX()+xChange);
 
             try {
-                Thread.sleep(2);
+                Thread.sleep(1);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -203,7 +230,7 @@ public class Player extends JComponent {
                 life+=1;
                 break;
             case 4:
-                if(speed>10){
+                if(speed>=GameConstant.MAX_SPEED){
                     break;
                 }
                 speed+=1;

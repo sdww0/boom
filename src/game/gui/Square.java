@@ -57,21 +57,22 @@ public class Square extends JPanel {
         if(this.element==null){
             return ElementType.NULL;
         }
-        switch (this.element.getClass().getName()) {
-            case "game.element.Boom":
-                return ElementType.BOOM;
-            case "game.element.Bomb":
-                return ElementType.BOMB;
-            case "game.element.Walls":
-                Walls walls = (Walls)(this.element);
-                if(walls.isCanBreak()){
-                    return ElementType.BREAKABLE_WALL;
-                }else {
-                    return ElementType.UNBREAKABLE_WALL;
-                }
-            default:
-                return ElementType.NULL;
+        String n = this.element.getClass().getName();
+        if(n.equals(GameConstant.BOOM_FILE_LOCATION)){
+            return ElementType.BOOM;
+        }else if(n.equals(GameConstant.BOMB_FILE_LOCATION)){
+            return ElementType.BOMB;
+        }else if(n.equals(GameConstant.WALLS_FILE_LOCATION)){
+            Walls walls = (Walls)(element);
+            if(walls.isCanBreak()){
+                return ElementType.BREAKABLE_WALL;
+            }else {
+                return ElementType.UNBREAKABLE_WALL;
+            }
+        }else{
+            throw new IllegalArgumentException("error Location:Square");
         }
+
     }
 
     /**
@@ -118,6 +119,10 @@ public class Square extends JPanel {
     public void setElement(Object element) {
         removeAllElement();
         this.element = element;
+        if(element==null){
+            repaint();
+            return;
+        }
         add((Component) element);
         repaint();
     }

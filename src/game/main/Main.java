@@ -31,11 +31,11 @@ public class Main {
         MusicPlayer.init();
 
         //测试添加玩家用
-        Player player1 = new Player(GameConstant.FIRST_PLAYER,new TrueLocation(0,0),new Bomb(1,1), GameData.playersLife,true);
+        Player player1 = new Player(GameConstant.FIRST_PLAYER,GameConstant.FIRST_POSITION.changeToTrueLocation(),new Bomb(1,1),true);
         GameData.player1 = player1;
         GameData.getMainFrame().getLayeredPane().add(player1, JLayeredPane.POPUP_LAYER);
 
-        Player player2 = new Player(GameConstant.SECOND_PLAYER,Location.changeToTrueLocation(new Location(15,0)),new Bomb(1,1),GameData.playersLife,false);
+        Player player2 = new Player(GameConstant.SECOND_PLAYER,GameConstant.SECOND_POSITION.changeToTrueLocation(),new Bomb(1,1),false);
         GameData.player2 = player2;
         GameData.getMainFrame().getLayeredPane().add(player2,JLayeredPane.POPUP_LAYER);
 

@@ -36,23 +36,24 @@ public class ImageReader {
             new ImageIcon(ImageReader.class.getResource("/game/image/player/blue4.png"))
     };
     public static final ImageIcon[] PLAYER2 = {
-            new ImageIcon(ImageReader.class.getResource("/game/image/player/green1.png")),
-            new ImageIcon(ImageReader.class.getResource("/game/image/player/green2.png")),
-            new ImageIcon(ImageReader.class.getResource("/game/image/player/green3.png")),
-            new ImageIcon(ImageReader.class.getResource("/game/image/player/green4.png"))
-    };
-    public static final ImageIcon[] PLAYER3 = {
             new ImageIcon(ImageReader.class.getResource("/game/image/player/orange1.png")),
             new ImageIcon(ImageReader.class.getResource("/game/image/player/orange2.png")),
             new ImageIcon(ImageReader.class.getResource("/game/image/player/orange3.png")),
             new ImageIcon(ImageReader.class.getResource("/game/image/player/orange4.png"))
     };
-    public static final ImageIcon[] PLAYER4 = {
+    public static final ImageIcon[] PLAYER3 = {
             new ImageIcon(ImageReader.class.getResource("/game/image/player/pink1.png")),
             new ImageIcon(ImageReader.class.getResource("/game/image/player/pink2.png")),
             new ImageIcon(ImageReader.class.getResource("/game/image/player/pink3.png")),
             new ImageIcon(ImageReader.class.getResource("/game/image/player/pink4.png"))
     };
+    public static final ImageIcon[] PLAYER4 = {
+            new ImageIcon(ImageReader.class.getResource("/game/image/player/green1.png")),
+            new ImageIcon(ImageReader.class.getResource("/game/image/player/green2.png")),
+            new ImageIcon(ImageReader.class.getResource("/game/image/player/green3.png")),
+            new ImageIcon(ImageReader.class.getResource("/game/image/player/green4.png"))
+    };
+
     public static final ImageIcon[] PLAYER_STATUS = {
             new ImageIcon(ImageReader.class.getResource("/game/image/player/player1.PNG")),
             new ImageIcon(ImageReader.class.getResource("/game/image/player/player2.PNG")),

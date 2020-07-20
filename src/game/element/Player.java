@@ -2,6 +2,7 @@ package game.element;
 
 import game.basement.Location;
 import game.basement.TrueLocation;
+import game.basement.UsefulFunction;
 import game.gamedata.GameConstant;
 import game.gamedata.GameData;
 import game.gamedata.Judge;
@@ -14,7 +15,7 @@ import java.awt.*;
 import java.util.ArrayList;
 
 /**
- * 玩家元素
+ * 玩家元素（或者是机器人）
  * 注：与其他元素不同的是玩家将独立于那些方格，直接放置在方格构成的整体上
  * 含
  * 位置
@@ -48,20 +49,24 @@ public class Player extends JComponent {
 
 
 
-    public Player(int whichPlayer, TrueLocation playerLocation, Bomb bomb, float life, boolean isPlayer1) {
+    public Player(int whichPlayer, TrueLocation playerLocation, Bomb bomb, boolean isPlayer1) {
         this.whichPlayer = whichPlayer;
         this.playerLocation = playerLocation;
+        this.bomb = bomb;
+        this.isPlayer1 = isPlayer1;
+        init();
+    }
+
+    private void init(){
         lastLocation = virtualLocation = playerLocation.changeToVirtualLocation();
         this.bombs = new ArrayList<Bomb>();
         this.bombs.add(null);
-        this.bomb = bomb;
         this.life = GameData.playersLife;
-        this.isPlayer1 = isPlayer1;
-        this.speed = GameData.playersDefaultSpeed;
         setLayout(null);
         setSize(GameConstant.SQUARE_SIZE,GameConstant.SQUARE_SIZE);
         setLocation(playerLocation.getX(),playerLocation.getY());
         currentImageIcon = ImageReader.ALL_PLAYER[whichPlayer-1][0];
+        this.speed = GameData.playersDefaultSpeed;
         new PlayerStatusUpdateThread(this).start();
     }
 
@@ -92,8 +97,8 @@ public class Player extends JComponent {
         virtualLocation = new Location(Math.round(this.playerLocation.getX()/(float)GameConstant.SQUARE_SIZE),
                 Math.round(this.playerLocation.getY()/(float)GameConstant.SQUARE_SIZE));
         if(lastLocation.getX()!=virtualLocation.getX()||lastLocation.getY()!=virtualLocation.getY()){
-            GameData.getBoard().getSquare()[lastLocation.getX()][lastLocation.getY()].setPlayer(null);
-            GameData.getBoard().getSquare()[virtualLocation.getX()][virtualLocation.getY()].setPlayer(this);
+            UsefulFunction.setPlayer(null,lastLocation);
+            UsefulFunction.setPlayer(this,virtualLocation);
         }
         setLocation(finalLocation.getX(),finalLocation.getY());
     }
@@ -106,6 +111,13 @@ public class Player extends JComponent {
         return lastLocation;
     }
 
+    /**
+     * 不建议使用
+     * 使用setPlayerLocation
+     * @param deltaX x变化量
+     * @param deltaY y变化量
+     */
+    @Deprecated
     public void moveXAndYPosition(int deltaX, int deltaY){
         TrueLocation finalLocation = showAnimation(playerLocation,new TrueLocation(this.playerLocation.getX()+deltaX,this.playerLocation.getY()+deltaY));
         lastLocation = new Location(Math.round(this.playerLocation.getX()/(float)GameConstant.SQUARE_SIZE),

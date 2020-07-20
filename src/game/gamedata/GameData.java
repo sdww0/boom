@@ -22,7 +22,22 @@ import java.util.concurrent.TimeUnit;
  * @author njdnhh
  */
 public class GameData {
-
+    /**
+     * 第一位代表在第几列，第二位代表在第几行
+     * --------------------------1
+     * |
+     * |
+     * |
+     * |
+     * |
+     * 2
+     * 0代表无东西
+     * 1代表可破坏的墙壁
+     * 2代表不可破坏的墙壁
+     * 3代表炸弹
+     * 4代表玩家
+     * 5代表爆炸效果
+     */
     private static int[][] map ;
 
     private static Board board = null;

@@ -1,4 +1,4 @@
-package game.robot.statemachine;
+package game.statemachine;
 
 
 

@@ -12,6 +12,10 @@ import java.awt.*;
  */
 public class Boom extends JComponent {
 
+    public static Boom getOne(){
+        return new Boom();
+    }
+
     public Boom() {
         setLayout(null);
         setSize(GameConstant.SQUARE_SIZE,GameConstant.SQUARE_SIZE);

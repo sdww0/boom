@@ -192,18 +192,7 @@ public class GameFrame extends JFrame {
          * 限制位置
          */
 
-
         player.setPlayerLocation(new TrueLocation(player.getPlayerLocation().getX() + xChange, player.getPlayerLocation().getY() + yChange));
-
-
-
-
-
-
-
-
-
-
 
 
         /*

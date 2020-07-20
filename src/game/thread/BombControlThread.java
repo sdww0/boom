@@ -1,9 +1,11 @@
 package game.thread;
 
 import game.basement.Location;
+import game.basement.UsefulFunction;
 import game.element.*;
 import game.gamedata.GameConstant;
 import game.gamedata.GameData;
+import game.map.MapList;
 import game.music.MusicPlayer;
 
 import java.util.ArrayList;
@@ -70,8 +72,7 @@ public class BombControlThread implements Runnable{
          */
         ArrayList<Location> locations = new ArrayList<>();
         locations.add(location);
-        GameData.getBoard().getSquare()[location.getX()]
-                [location.getY()].setElement(new Boom());
+        UsefulFunction.setElementType(Boom.getOne(),new Location(location.getX(),location.getY()));
         MusicPlayer.Play(MusicPlayer.BOOM);
         /*
          *对于炸弹所在位置进行前置处理
@@ -116,6 +117,7 @@ public class BombControlThread implements Runnable{
                 GameData.getBoard().getSquare()[location.getX() + xChange][location.getY() + yChange].setItem(null);
 
                 boolean canBreak = true;
+
                 switch(elementType){
                     case BOMB:
                         GameData.bombExplodedLocation.add(new Location(location.getX() + xChange, location.getY() + yChange));
@@ -126,6 +128,7 @@ public class BombControlThread implements Runnable{
                     case BREAKABLE_WALL:
                         locations.add(new Location(location.getX() + xChange
                                 , location.getY() + yChange));
+                        UsefulFunction.setElementType(Boom.getOne(),new Location(location.getX()+xChange,location.getY()+yChange));
                         GameData.getBoard().getSquare()[location.getX() + xChange]
                                 [location.getY() + yChange].setItem(getRandomItem());
                         try{
@@ -133,8 +136,6 @@ public class BombControlThread implements Runnable{
                         }catch (Exception ignored){
                             //whoCares
                         }
-                        GameData.getBoard().getSquare()[location.getX() + xChange]
-                                [location.getY() + yChange].setElement(new Boom());
                         break;
                     case UNBREAKABLE_WALL:break;
                     default:
@@ -146,8 +147,8 @@ public class BombControlThread implements Runnable{
 
                 locations.add(new Location(location.getX() + xChange
                         , location.getY() + yChange));
-                GameData.getBoard().getSquare()[location.getX() + xChange]
-                        [location.getY() + yChange].setElement(new Boom());
+                UsefulFunction.setElementType(Boom.getOne(),new Location(location.getX()+xChange,location.getY()+yChange));
+
 
             }
         }

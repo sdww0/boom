@@ -68,7 +68,7 @@ class ControlRunnable implements Runnable{
                     JOptionPane.showConfirmDialog(GameData.getBoard(),"Player2 Dead!!!!");
                 }
                 GameData.getBoard().getSquare()[player.getVirtualLocation().getX()]
-                        [player.getVirtualLocation().getY()].setPlayer(null);
+                        [player.getVirtualLocation().getY()].removePlayer(player);
                 GameData.getMainFrame().getLayeredPane().remove(player);
                 GameData.getMainFrame().repaint();
                 break;

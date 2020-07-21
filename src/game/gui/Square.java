@@ -3,9 +3,12 @@ package game.gui;
 import game.basement.Location;
 import game.element.*;
 import game.gamedata.GameConstant;
+import game.gamedata.GameData;
+import sun.audio.ContinuousAudioDataStream;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.LinkedList;
 
 /**
  * swing面板上组成原件
@@ -21,12 +24,13 @@ public class Square extends JPanel {
      * 如果无玩家在此方格上则为null
      * 如有则为该玩家
      */
-    private Player player;
+    private volatile LinkedList<Player> players;
 
     private Location squareLocation;
     private Color color;
 
     public Square(Location squareLocation, Color color) {
+        players = new LinkedList<>();
         this.squareLocation = squareLocation;
         this.color = color;
         this.element = null;
@@ -51,8 +55,11 @@ public class Square extends JPanel {
      * @return 含有的元素类型
      */
     public ElementType getElementType(){
-        if(player!=null){
+        if(players.size()>0){
             return ElementType.PLAYER;
+        }
+        if(item!=null){
+            return ElementType.ITEM;
         }
         if(this.element==null){
             return ElementType.NULL;
@@ -105,12 +112,13 @@ public class Square extends JPanel {
     }
 
     public void removeAllElement(){
-        this.element = null;
-        removeAll();
-        if(item!=null){
-            add(item);
+        if(this.element!=null){
+            remove((JComponent)this.element);
+            this.element = null;
+            repaint();
+        }else{
+            return;
         }
-        repaint();
     }
 
     /**
@@ -135,17 +143,32 @@ public class Square extends JPanel {
         this.squareLocation = squareLocation;
     }
 
-    public Player getPlayer() {
-        return player;
+    public LinkedList<Player> getPlayer() {
+        return players;
     }
 
     public void setPlayer(Player player) {
-        this.player = player;
+        if(player!=null){
+            players.add(player);
+        }
     }
+
+    public void removePlayer(Player player) {
+        if(player!=null){
+            players.remove(player);
+        }
+    }
+
+    public void hurtPlayers(){
+        for (Player value : players) {
+            value.hurt();
+        }
+    }
+
 
     @Override
     public String toString() {
-        if(player!=null){
+        if(players.size()!=0){
             return "1";
         }else {
             return "0";

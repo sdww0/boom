@@ -1,7 +1,11 @@
 package game.statemachine.robot;
 
+import game.basement.Location;
 import game.robot.RobotController;
 import game.statemachine.StateBase;
+
+import java.util.HashMap;
+import java.util.LinkedList;
 
 /**
  * 逃跑状态
@@ -9,6 +13,7 @@ import game.statemachine.StateBase;
  */
 public class RunState implements StateBase<RobotController> {
     public static RunState Instance;
+    private HashMap<Location,Integer> hashMap;
 
     private RunState(){}
 
@@ -31,7 +36,7 @@ public class RunState implements StateBase<RobotController> {
 
     @Override
     public void execute(RobotController type) {
-
+        hashMap = new HashMap<>();
     }
 
     @Override

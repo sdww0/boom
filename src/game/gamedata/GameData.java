@@ -7,6 +7,7 @@ import game.gui.GameFrame;
 import game.gui.RightMenu;
 import game.map.MapList;
 
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -38,13 +39,13 @@ public class GameData {
      * 4代表玩家
      * 5代表爆炸效果
      */
-    private static int[][] map ;
+    private volatile static int[][] map ;
 
-    private static Board board = null;
+    private volatile static Board board = null;
     private static RightMenu rightMenu = null;
     private static GameFrame mainFrame = null;
-    private static ThreadPoolExecutor bombControlThreadPool = new ThreadPoolExecutor(20,40,
-            GameConstant.BOMB_SECONDS+1, TimeUnit.SECONDS,new ArrayBlockingQueue<Runnable>(20));
+    private static ThreadPoolExecutor bombControlThreadPool = new ThreadPoolExecutor(30,50,
+            GameConstant.BOMB_SECONDS+3, TimeUnit.SECONDS,new ArrayBlockingQueue<Runnable>(20));
     private static ThreadPoolExecutor GameExecutePool = new ThreadPoolExecutor(20,40,
             GameConstant.BOMB_SECONDS+1, TimeUnit.SECONDS,new ArrayBlockingQueue<Runnable>(20));
 
@@ -54,10 +55,10 @@ public class GameData {
      */
     public static Player player1 = null;
     public static Player player2 = null;
-    public static volatile LinkedList<Location> bombExplodedLocation = new LinkedList<>();
+    public static volatile HashSet<Location> bombExplodedLocation = new HashSet<>();
 
 
-    public static int playersLife = 5;
+    public static int playersLife = 15;
     public static int playersDefaultSpeed = 1;
 
     public static int[][] getMap() {

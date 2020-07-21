@@ -3,6 +3,7 @@ package game.basement;
 import game.element.*;
 import game.gamedata.GameData;
 import game.gamedata.GameConstant;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * 比较有用的函数
@@ -49,16 +50,32 @@ public class UsefulFunction {
      * @param player 玩家
      * @param location 设定元素所在位置
      */
-    public static void setPlayer(Player player,Location location){
-        GameData.getBoard().getSquare()[location.getX()][location.getY()].setPlayer(player);
-        if(player==null){
-            GameData.getMap()[location.getX()][location.getY()] = ElementType.NULL_NUMBER;
-        }else{
+    public static void setPlayer(@NotNull Player player, Location location){
+            GameData.getBoard().getSquare()[location.getX()][location.getY()].setPlayer(player);
             GameData.getMap()[location.getX()][location.getY()] = ElementType.PLAYER_NUMBER;
-        }
-
     }
 
+    /**
+     * 删除某个位置的玩家信息
+     * 同时修改board以及map
+     * @param player 玩家
+     * @param location 设定元素所在位置
+     */
+    public static void removePlayer(@NotNull Player player, Location location){
+        GameData.getBoard().getSquare()[location.getX()][location.getY()].removePlayer(player);
+        GameData.getMap()[location.getX()][location.getY()] = ElementType.NULL_NUMBER;
+    }
+
+    /**
+     * 设置某个位置的item
+     * 同时修改board以及map
+     * @param item item
+     * @param location 设定元素所在位置
+     */
+    public static void setItem(Item item, Location location){
+        GameData.getBoard().getSquare()[location.getX()][location.getY()].setItem(item);
+        GameData.getMap()[location.getX()][location.getY()] = ElementType.ITEM_NUMBER;
+    }
 
 
 }

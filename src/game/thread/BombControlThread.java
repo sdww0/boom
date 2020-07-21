@@ -9,6 +9,7 @@ import game.map.MapList;
 import game.music.MusicPlayer;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 /**
  * 控制炸弹爆炸runnable
@@ -24,27 +25,26 @@ public class BombControlThread implements Runnable{
     @Override
     public void run() {
         boolean explode = false;
+
         try {
             /*
             检测自己所处位置是否被标记为设定炸弹爆炸位置
              */
             for(int n =1;n<=100;n++) {
-                for (Location location1 : GameData.bombExplodedLocation) {
-                    if (location1.getX() == location.getX() &&
-                            location1.getY() == location.getY()) {
-                        GameData.bombExplodedLocation.remove(location1);
-                        explode();
-                        explode = true;
-                    }
-
+                if(GameData.bombExplodedLocation.contains(location)){
+                    GameData.bombExplodedLocation.remove(location);
+                    explode();
+                    explode = true;
+                    break;
                 }
                 Thread.sleep(GameConstant.BOMB_SECONDS * 10);
             }
         } catch (InterruptedException ignore) {
             //whoCares?
-        }
-        if(!explode) {
-            explode();
+        }finally {
+            if(!explode) {
+                explode();
+            }
         }
     }
 
@@ -80,7 +80,7 @@ public class BombControlThread implements Runnable{
         ElementType elementType = GameData.getBoard().getSquare()[location.getX()][location.getY() ].getElementType();
         GameData.getBoard().getSquare()[location.getX()][location.getY()].setItem(null);
         if(elementType==ElementType.PLAYER){
-            GameData.getBoard().getSquare()[location.getX()][location.getY()].getPlayer().hurt();
+            GameData.getBoard().getSquare()[location.getX()][location.getY()].hurtPlayers();
         }
 
         for (int n = 0; n < 4; n++) {
@@ -123,14 +123,13 @@ public class BombControlThread implements Runnable{
                         GameData.bombExplodedLocation.add(new Location(location.getX() + xChange, location.getY() + yChange));
                         break;
                     case PLAYER:
-                        GameData.getBoard().getSquare()[location.getX() + xChange][location.getY() + yChange].getPlayer().hurt();
+                        GameData.getBoard().getSquare()[location.getX() + xChange][location.getY() + yChange].hurtPlayers();
                         break;
                     case BREAKABLE_WALL:
                         locations.add(new Location(location.getX() + xChange
                                 , location.getY() + yChange));
                         UsefulFunction.setElementType(Boom.getOne(),new Location(location.getX()+xChange,location.getY()+yChange));
-                        GameData.getBoard().getSquare()[location.getX() + xChange]
-                                [location.getY() + yChange].setItem(getRandomItem());
+                        UsefulFunction.setItem(getRandomItem(),new Location(location.getX()+xChange,location.getY()+yChange));
                         try{
                             Thread.sleep(30);
                         }catch (Exception ignored){
@@ -159,9 +158,7 @@ public class BombControlThread implements Runnable{
         }
         for (Location location1 : locations) {
             GameData.getBoard().getSquare()[location1.getX()][location1.getY()].removeAllElement();
-            if(GameData.getBoard().getSquare()[location1.getX()][location1.getY()].getItem()!=null){
-                GameData.getBoard().getSquare()[location1.getX()][location1.getY()].getItem().repaint();
-            }
+
         }
     }
 

@@ -8,6 +8,7 @@ import game.gamedata.GameData;
 import game.gamedata.Judge;
 import game.image.ImageReader;
 import game.music.MusicPlayer;
+import game.thread.BombControlThread;
 import game.thread.PlayerMovePlaceBombThread;
 import game.thread.PlayerStatusUpdateThread;
 
@@ -58,6 +59,7 @@ public class Player extends JComponent {
         this.bomb = bomb;
         this.isPlayer1 = isPlayer1;
         this.isRobot = false;
+
     }
 
     protected Player(int whichPlayer, TrueLocation playerLocation, Bomb bomb){
@@ -78,6 +80,7 @@ public class Player extends JComponent {
         setLocation(playerLocation.getX(),playerLocation.getY());
         currentImageIcon = ImageReader.ALL_PLAYER[whichPlayer-1][0];
         this.speed = GameData.playersDefaultSpeed;
+        GameData.getBoard().getSquare()[virtualLocation.getX()][virtualLocation.getY()].setPlayer(this);
         new PlayerStatusUpdateThread(this).start();
         if(!isRobot) {
             if (isPlayer1) {
@@ -123,9 +126,9 @@ public class Player extends JComponent {
         this.playerLocation = finalLocation;
         virtualLocation = new Location(Math.round(this.playerLocation.getX()/(float)GameConstant.SQUARE_SIZE),
                 Math.round(this.playerLocation.getY()/(float)GameConstant.SQUARE_SIZE));
-        if(lastLocation.getX()!=virtualLocation.getX()||lastLocation.getY()!=virtualLocation.getY()){
-            UsefulFunction.setPlayer(null,lastLocation);
+        if(!lastLocation.equals(virtualLocation)){
             UsefulFunction.setPlayer(this,virtualLocation);
+            UsefulFunction.removePlayer(this,lastLocation);
         }
         setLocation(finalLocation.getX(),finalLocation.getY());
     }
@@ -196,12 +199,10 @@ public class Player extends JComponent {
                 break;
             }
             ElementType elementType = GameData.getBoard().getSquare()[canMoveX][canMoveY].getElementType();
-            if(!(elementType== ElementType.NULL||elementType==ElementType.PLAYER)){
+            if(!(elementType== ElementType.NULL||elementType==ElementType.PLAYER||elementType==ElementType.ITEM)){
                 break;
             }
-            if (GameData.getBoard().getSquare()[canMoveX][canMoveY].getItem() != null) {
-                reactPickUpItem(new Location(canMoveX, canMoveY));
-            }
+            reactPickUpItem(new Location(canMoveX,canMoveY));
 
 
             setLocation(location.getX()+xChange,location.getY()+yChange);
@@ -217,29 +218,113 @@ public class Player extends JComponent {
         return location;
     }
 
-    private void reactPickUpItem(Location location) {
+    private synchronized void reactPickUpItem(Location location) {
+
+        if (GameData.getBoard().getSquare()[location.getX()][location.getY()].getItem() == null) {
+            return;
+        }
         MusicPlayer.Play(MusicPlayer.PICKUP);
-        switch (GameData.getBoard().getSquare()[location.getX()][location.getY()].getItem().getType()) {
-            case 1:
-                bombs.add(null);
-                break;
-            case 2:
-                bomb.setRadius(bomb.getRadius() + 1);
-                break;
-            case 3:
-                life+=1;
-                break;
-            case 4:
-                if(speed>=GameConstant.MAX_SPEED){
-                    break;
-                }
+        if(GameData.getBoard().getSquare()[location.getX()][location.getY()].getItem()!=null&&
+                GameData.getBoard().getSquare()[location.getX()][location.getY()].getItem().getType()==1){
+            bombs.add(null);
+        }else if(GameData.getBoard().getSquare()[location.getX()][location.getY()].getItem()!=null&&
+                GameData.getBoard().getSquare()[location.getX()][location.getY()].getItem().getType()==2){
+            bomb.setRadius(bomb.getRadius() + 1);
+        }else if(GameData.getBoard().getSquare()[location.getX()][location.getY()].getItem()!=null&&
+                GameData.getBoard().getSquare()[location.getX()][location.getY()].getItem().getType()==3){
+            life+=1;
+        }else if(GameData.getBoard().getSquare()[location.getX()][location.getY()].getItem()!=null&&
+                GameData.getBoard().getSquare()[location.getX()][location.getY()].getItem().getType()==4){
+            if(speed<GameConstant.MAX_SPEED){
                 speed+=1;
-                break;
-            default:
+            }
         }
         GameData.getBoard().getSquare()[location.getX()][location.getY()].setItem(null);
     }
 
+    /**
+     * 移动
+     *
+     * @param keyCode 指令
+     */
+    public void movePosition(int keyCode) {
+        int xChange = 0, yChange = 0;
+        /*
+        根据keyCode移动位置
+         */
+        int maxAccess = 16;
+        if (keyCode == KeyEvent.VK_W || keyCode == KeyEvent.VK_UP) {
+            yChange = -1*this.getSpeed() ;
+            this.setCurrentImageIcon(ImageReader.ALL_PLAYER[this.whichPlayer - 1][GameConstant.IMAGE_UP]);
+            if (this.playerLocation.getX() % GameConstant.SQUARE_SIZE >= maxAccess &&
+                    this.playerLocation.getX() % GameConstant.SQUARE_SIZE <= GameConstant.SQUARE_SIZE - maxAccess) {
+                return;
+            } else {
+                this.playerLocation.setX(Math.round(this.playerLocation.getX() / (float) GameConstant.SQUARE_SIZE) * GameConstant.SQUARE_SIZE);
+            }
+        } else if (keyCode == KeyEvent.VK_S || keyCode == KeyEvent.VK_DOWN) {
+            yChange = this.getSpeed();
+            this.setCurrentImageIcon(ImageReader.ALL_PLAYER[this.whichPlayer - 1][GameConstant.IMAGE_DOWN]);
+            if (this.playerLocation.getX() % GameConstant.SQUARE_SIZE >= maxAccess &&
+                    this.playerLocation.getX() % GameConstant.SQUARE_SIZE <= GameConstant.SQUARE_SIZE - maxAccess) {
+                return;
+            } else {
+                this.playerLocation.setX(Math.round(this.playerLocation.getX() / (float) GameConstant.SQUARE_SIZE) * GameConstant.SQUARE_SIZE);
+            }
+        } else if (keyCode == KeyEvent.VK_A || keyCode == KeyEvent.VK_LEFT) {
+            xChange = -1 * this.getSpeed();
+            this.setCurrentImageIcon(ImageReader.ALL_PLAYER[this.whichPlayer - 1][GameConstant.IMAGE_LEFT]);
+            if (this.playerLocation.getY() % GameConstant.SQUARE_SIZE >= maxAccess &&
+                    this.playerLocation.getY() % GameConstant.SQUARE_SIZE <= GameConstant.SQUARE_SIZE - maxAccess) {
+                return;
+            } else {
+                this.playerLocation.setY(Math.round(this.playerLocation.getY() / (float) GameConstant.SQUARE_SIZE) * GameConstant.SQUARE_SIZE);
+            }
+        } else if (keyCode == KeyEvent.VK_D || keyCode == KeyEvent.VK_RIGHT) {
+            xChange = this.getSpeed();
+            this.setCurrentImageIcon(ImageReader.ALL_PLAYER[this.whichPlayer - 1][GameConstant.IMAGE_RIGHT]);
+            if (this.playerLocation.getY() % GameConstant.SQUARE_SIZE >= maxAccess &&
+                    this.playerLocation.getY() % GameConstant.SQUARE_SIZE <= GameConstant.SQUARE_SIZE - maxAccess) {
+                return;
+            } else {
+                this.playerLocation.setY(Math.round(this.playerLocation.getY() / (float) GameConstant.SQUARE_SIZE) * GameConstant.SQUARE_SIZE);
+            }
+        } else {
+            return;
+        }
+
+        this.setPlayerLocation(new TrueLocation(this.playerLocation.getX() + xChange, this.playerLocation.getY() + yChange));
+    }
+
+    /**
+     * 放置炸弹
+     */
+    public synchronized void placeBomb() {
+        if (GameData.getBoard().getSquare()[this.getVirtualLocation().getX()]
+                [this.getVirtualLocation().getY()].getElement() != null) {
+            return;
+        }
+        boolean enoughBombs = false;
+        int place = 0;
+        for (int n = 0; n < this.getBombs().size(); n++) {
+            if (this.getBombs().get(n) == null) {
+                place = n;
+                enoughBombs = true;
+                break;
+            }
+        }
+
+        if (enoughBombs) {
+            MusicPlayer.Play(MusicPlayer.PLACE);
+                                this.getBombs().remove(place);
+            this.getBombs().add(place, this.getBomb());
+
+            GameData.getBombControlThreadPool().submit(new BombControlThread(this.getBomb(), this.virtualLocation, this));
+            GameData.getBoard().getSquare()[this.getVirtualLocation().getX()][this.getVirtualLocation().getY()].setElement(new Bomb(bomb.getRadius(),bomb.getDamage()));
+            GameData.getMap()[this.getVirtualLocation().getX()][this.getVirtualLocation().getY()] = ElementType.BOMB_NUMBER;
+        }
+
+    }
 
     public void setVirtualLocation(Location virtualLocation) {
         this.lastLocation = this.virtualLocation;

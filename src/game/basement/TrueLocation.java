@@ -3,6 +3,8 @@ package game.basement;
 import game.gamedata.GameConstant;
 import game.gamedata.GameData;
 
+import java.util.Objects;
+
 /**
  * 显示在面板上面真正的位置
  * @author njdnhh
@@ -47,4 +49,17 @@ public class TrueLocation {
 
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TrueLocation location = (TrueLocation) o;
+        return x == location.x &&
+                y == location.y;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(x, y);
+    }
 }

@@ -46,6 +46,11 @@ public class GameConstant {
     public static final String PLAYER_FILE_LOCATION = Player.class.getName();
     public static final String WALLS_FILE_LOCATION = Walls.class.getName();
 
+    public static final int IMAGE_UP = 1;
+    public static final int IMAGE_DOWN = 0;
+    public static final int IMAGE_LEFT = 3;
+    public static final int IMAGE_RIGHT = 2;
+
 
 
     public static final int BOMB_SECONDS = 4 ;

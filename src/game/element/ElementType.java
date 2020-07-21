@@ -13,13 +13,15 @@ public enum ElementType {
      * 炸弹
      * 玩家
      * 爆炸效果
+     * 道具
      */
     NULL,
     BREAKABLE_WALL,
     UNBREAKABLE_WALL,
     BOMB,
     PLAYER,
-    BOOM;
+    BOOM,
+    ITEM;
 
     public static final int NULL_NUMBER = 0;
     public static final int BREAKABLE_WALL_NUMBER = 1;
@@ -27,6 +29,7 @@ public enum ElementType {
     public static final int BOMB_NUMBER = 3;
     public static final int PLAYER_NUMBER = 4;
     public static final int BOOM_NUMBER = 5;
+    public static final int ITEM_NUMBER = 6;
 
     /**
      * 将数值转化为Enum
@@ -41,6 +44,7 @@ public enum ElementType {
             case BOMB_NUMBER:return BOMB;
             case PLAYER_NUMBER:return PLAYER;
             case BOOM_NUMBER:return BOOM;
+            case ITEM_NUMBER:return ITEM;
             default:throw new IllegalArgumentException("wrong number location:ElementType");
         }
     }
@@ -57,7 +61,7 @@ public enum ElementType {
             case BOMB:return BOMB_NUMBER;
             case PLAYER:return PLAYER_NUMBER;
             case BOOM:return BOOM_NUMBER;
-
+            case ITEM:return ITEM_NUMBER;
             default:throw new IllegalArgumentException("wrong number location:ElementType");
         }
     }

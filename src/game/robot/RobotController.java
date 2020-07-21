@@ -1,11 +1,15 @@
 package game.robot;
 
 
+import game.basement.Location;
 import game.element.Player;
 import game.element.Robot;
 import game.statemachine.StateMachine;
 import game.statemachine.robot.NormalState;
 import game.statemachine.robot.RunState;
+
+import java.util.HashMap;
+import java.util.LinkedList;
 
 /**
  * 机器人控制
@@ -31,15 +35,15 @@ public class RobotController {
 
     public RobotController(Robot robot){
         this.robot = robot;
-        init();
     }
 
-    private void init(){
+    public void init(){
         robotStateMachine = new StateMachine<>(this);
         robotStateMachine.setCurrentState(NormalState.getInstance());
         NormalState.getInstance().init(this);
         RunState.getInstance().init(this);
         controlRobotThread = new Thread(this::update);
+        controlRobotThread.start();
         robotLife = robot.getLife();
     }
 
@@ -48,26 +52,24 @@ public class RobotController {
     }
 
     private void update(){
-        while(true) {
-            if (robot.getLife() == 0) {
-                break;
-            }
-            if(robotLife!=robot.getLife()) {
-                if(robotLife>2&&robot.getLife()<=2){
+        while (robot.getLife() != 0) {
+            if (robotLife != robot.getLife()) {
+                if (robotLife > 2 && robot.getLife() <= 2) {
                     robotStateMachine.setCurrentState(RunState.getInstance());
-                }else if(robotLife<=2&&robot.getLife()>2){
+                } else if (robotLife <= 2 && robot.getLife() > 2) {
                     robotStateMachine.setCurrentState(NormalState.getInstance());
                 }
                 robotLife = robot.getLife();
             }
             robotStateMachine.update();
             try {
-                Thread.sleep(100);
+                Thread.sleep(20);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
     }
+
 
 
 

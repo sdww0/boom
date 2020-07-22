@@ -39,27 +39,7 @@ public class NormalState implements StateBase<RobotController> {
 
     @Override
     public void execute(RobotController type) {
-        hashMap = RobotAndLocation.update(type.getRobot().getVirtualLocation());
-        Iterator<Location> keys=hashMap.keySet().iterator();
-        Iterator<Integer> values=hashMap.values().iterator();
-        Location location = null;
-        int max = Integer.MIN_VALUE;
-        while (keys.hasNext()){
-            int value = values.next();
-            if(value>max){
-                location = keys.next();
-                max = value;
-            }else{
-                keys.next();
-            }
-        }
-        if(lastLocation==type.getRobot().getLastLocation()){
-            return;
-        }
-        lastLocation = location;
-        assert location != null;
-        type.getRobot().moveRobotToPosition(location);
-
+        type.getRobot().moveRobotToPosition(RobotAndLocation.update(type.getRobot().getVirtualLocation()));
     }
 
     @Override

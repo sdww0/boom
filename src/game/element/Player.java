@@ -29,6 +29,9 @@ import java.util.ArrayList;
  * @author njdnhh
  */
 public class Player extends JComponent {
+    protected static final int maxAccess = 16;
+
+
     /**
      * 玩家位置
      * 放置的炸弹列表（如果可以放置，则对应位置为null，不可放置则有炸弹）
@@ -166,7 +169,7 @@ public class Player extends JComponent {
      * @param targetLocation 目标位置
      * @return 中断后的位置
      */
-    private TrueLocation showAnimation(TrueLocation lastLocation,TrueLocation targetLocation){
+    protected TrueLocation showAnimation(TrueLocation lastLocation, TrueLocation targetLocation){
         int xChange = 0, yChange = 0;
         int different = 0;
         if(targetLocation.getX()-lastLocation.getX()!=0){
@@ -182,7 +185,6 @@ public class Player extends JComponent {
         int canMoveY = 0;
         TrueLocation location = new TrueLocation(lastLocation.getX(),lastLocation.getY());
         for(int n =0;n<different;n++){
-
             if (location.getX()+xChange <= -1 || location.getX()+xChange >= GameConstant.BOARD_SIZE
                     || location.getY() + yChange <= -1 || location.getY() + yChange >= GameConstant.BOARD_SIZE) {
                 break;
@@ -218,7 +220,7 @@ public class Player extends JComponent {
         return location;
     }
 
-    private synchronized void reactPickUpItem(Location location) {
+    protected synchronized void reactPickUpItem(Location location) {
 
         if (GameData.getBoard().getSquare()[location.getX()][location.getY()].getItem() == null) {
             return;
@@ -252,7 +254,6 @@ public class Player extends JComponent {
         /*
         根据keyCode移动位置
          */
-        int maxAccess = 16;
         if (keyCode == KeyEvent.VK_W || keyCode == KeyEvent.VK_UP) {
             yChange = -1*this.getSpeed() ;
             this.setCurrentImageIcon(ImageReader.ALL_PLAYER[this.whichPlayer - 1][GameConstant.IMAGE_UP]);
@@ -385,4 +386,7 @@ public class Player extends JComponent {
         life--;
     }
 
+    protected void setLastLocation(Location lastLocation) {
+        this.lastLocation = lastLocation;
+    }
 }

@@ -62,4 +62,31 @@ public class TrueLocation {
     public int hashCode() {
         return Objects.hash(x, y);
     }
+
+    public TrueLocation clone(){
+        return new TrueLocation(this.x,this.y);
+    }
+
+    /**
+     * 带有方向的变换
+     * 如方向为x方向+1
+     * 则会返回一个Math。floor的数值
+     * @param direction 方向
+     * @return 位置
+     */
+    public Location changeToVirtualLocationWithDirection(int direction){
+        if(direction==Location.UP||direction==Location.LEFT){
+            return new Location((int)Math.ceil(this.getX() /(double)GameConstant.SQUARE_SIZE),
+                    (int)Math.ceil(this.getY() /(double)GameConstant.SQUARE_SIZE));
+        }else if(direction==Location.DOWN||direction==Location.RIGHT){
+            return new Location((int)Math.floor(this.getX() /(double)GameConstant.SQUARE_SIZE),
+                    (int)Math.floor(this.getY() /(double)GameConstant.SQUARE_SIZE));
+        }else{
+            throw new IllegalArgumentException("error location:TrueLocation(changeToVirtualLocationWithDirection)");
+        }
+
+
+    }
+
+
 }

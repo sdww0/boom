@@ -14,6 +14,11 @@ public class Location {
     private int x;
     private int y;
 
+    public static final int UP = 1;
+    public static final int DOWN = 2;
+    public static final int LEFT = 3;
+    public static final int RIGHT = 4;
+
     public Location(int x, int y) {
         this.x = x;
         this.y = y;
@@ -67,4 +72,11 @@ public class Location {
                 ", y=" + y +
                 '}';
     }
+
+    @Override
+    public Location clone(){
+        return new Location(this.x,this.y);
+    }
+
+
 }

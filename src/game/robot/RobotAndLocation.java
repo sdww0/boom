@@ -1,5 +1,6 @@
 package game.robot;
 
+import com.sun.xml.internal.fastinfoset.util.ValueArray;
 import game.basement.Location;
 import game.element.Bomb;
 import game.element.ElementType;
@@ -7,8 +8,17 @@ import game.element.Item;
 import game.gamedata.GameConstant;
 import game.gamedata.GameData;
 
+import javax.xml.bind.Element;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
+
+import static game.basement.Location.UP;
+import static game.basement.Location.DOWN;
+import static game.basement.Location.LEFT;
+import static game.basement.Location.RIGHT;
+
 
 /**
  * 机器人移动运算算法
@@ -19,28 +29,22 @@ import java.util.HashSet;
 public class RobotAndLocation {
     private static  int UNBREAKABLE_WALL_VALUE = 0;
     private static  int BREAKABLE_WALL_VALUE = 2;
-    private static  int NULL_VALUE = 2;
+    private static  int NULL_VALUE = 1;
     private static  int BOOM_VALUE = 0;
     private static  int PLAYER_VALUE = 1;
     private static  int BOMB_VALUE = Integer.MIN_VALUE;
-    private static  int ITEM_VALUE = 4;
-
-    private static final int UP = 1;
-    private static final int DOWN = 2;
-    private static final int LEFT = 3;
-    private static final int RIGHT = 4;
-
-
+    private static  int ITEM_VALUE = 20;
 
     /**
      * 对输入位置进行估值
      * @param location 选定位置
-     * @return 哈希表映射代表每个位置的估值
+     * @return 位置
      */
-    public static HashMap<Location,Integer> update(Location location){
-        HashMap<Location,Integer> values = new HashMap<>(2* GameConstant.SQUARE_AMOUNT);
-        int x = location.getX();
-        int y = location.getY();
+    public static Location update(Location location){
+        LinkedList<Location> locations = new LinkedList<>();
+        LinkedList<Integer> values = new LinkedList<>();
+        int x;
+        int y;
         int direction = UP;
         /*
          * 前置遍历
@@ -169,12 +173,12 @@ public class RobotAndLocation {
                 }
 
                 value += valueOfLocation(direction, currentLocation);
-                values.put(new Location(currentLocation.getX(),currentLocation.getY()), value);
-
+                locations.add(currentLocation.clone());
+                values.add(value);
             }
 
         } while (direction != UP);
-        return values;
+        return findMaxDistance(locations,values,location);
     }
 
     private static Integer valueOfLocation(int direction,Location location){
@@ -218,6 +222,7 @@ public class RobotAndLocation {
             default:throw new IllegalArgumentException("error Location:RobotAndLocation.java(getValueOfDirection)");
         }
         int value = 0;
+        value += changeMapNumberToValue(GameData.getMap()[x][y]);
         while(true){
             x+=xChange;
             y+=yChange;
@@ -266,5 +271,46 @@ public class RobotAndLocation {
 
     }
 
+    private static Location findMaxDistance(LinkedList<Location> locations,LinkedList<Integer> values,Location currentLocation){
+        int max = Integer.MIN_VALUE;
+        for(int n:values){
+            if(n>max){
+                max = n;
+            }
+        }
+        for(int n = 0;n!=values.size();){
+            if(values.get(n)!=max){
+                locations.remove(n);
+                values.remove(n);
+            }else{
+                values.set(n,Math.abs(currentLocation.getX()-locations.get(n).getX())+Math.abs(currentLocation.getY()-locations.get(n).getY()));
+                        n++;
+            }
+        }
+        max = 0;
+        for(int n = 1;n<locations.size();n++){
+            if(values.get(n)>values.get(max)){
+                max = n;
+            }
+        }
+
+        return locations.get(max);
+    }
+    
+    private static int changeMapNumberToValue(int mapNumber){
+        switch (ElementType.changeNumberToEnum(mapNumber)){
+            case NULL:return NULL_VALUE;
+            case BREAKABLE_WALL:return  BREAKABLE_WALL_VALUE;
+            case UNBREAKABLE_WALL:return UNBREAKABLE_WALL_VALUE;
+            case BOMB:return BOMB_VALUE;
+            case PLAYER:return PLAYER_VALUE;
+            case BOOM:return BOOM_VALUE;
+            case ITEM:return ITEM_VALUE;
+            default:throw new IllegalArgumentException("wrong number location:RobotAndLocation(changeMapNumberToValue)");
+        }
+        
+    }
+    
+    
 
 }

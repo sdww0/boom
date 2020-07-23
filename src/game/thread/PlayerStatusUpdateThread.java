@@ -60,13 +60,17 @@ class ControlRunnable implements Runnable{
             }
 
             if(player.getLife()<=0){
-                if(player.isPlayer1()) {
-                    GameData.player1 = null;
-                    JOptionPane.showConfirmDialog(GameData.getBoard(),"Player1 Dead!!!!");
-                }else{
-                    GameData.player2 = null;
-                    JOptionPane.showConfirmDialog(GameData.getBoard(),"Player2 Dead!!!!");
+
+                JOptionPane.showConfirmDialog(GameData.getBoard(),"Player"+player.getWhichPlayer()+" Dead!!!");
+                if(!player.isRobot()){
+                    if(player.isPlayer1()){
+                        GameData.player1=null;
+                    }else{
+                        GameData.player2=null;
+                    }
                 }
+
+
                 GameData.getBoard().getSquare()[player.getVirtualLocation().getX()]
                         [player.getVirtualLocation().getY()].removePlayer(player);
                 GameData.getMainFrame().getLayeredPane().remove(player);

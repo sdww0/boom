@@ -33,7 +33,7 @@ public class Main {
         MusicPlayer.init();
 
         //测试添加玩家用
-        Player player1 = new Player(GameConstant.FIRST_PLAYER,GameConstant.FOURTH_POSITION.changeToTrueLocation(),new Bomb(1,1),true);
+        Player player1 = new Player(GameConstant.THIRD_PLAYER,GameConstant.THIRD_POSITION.changeToTrueLocation(),new Bomb(1,1),true);
         GameData.player1 = player1;
         player1.init();
         GameData.getMainFrame().getLayeredPane().add(player1, JLayeredPane.POPUP_LAYER);
@@ -43,10 +43,15 @@ public class Main {
         player2.init();
         GameData.getMainFrame().getLayeredPane().add(player2,JLayeredPane.POPUP_LAYER);
 
-        RobotController robotController = new RobotController(new Robot(GameConstant.FOURTH_PLAYER,GameConstant.FOURTH_POSITION.changeToTrueLocation(),new Bomb(1,1)));
-        robotController.getRobot().init();
-        robotController.init();
-        GameData.getMainFrame().getLayeredPane().add(robotController.getRobot(),JLayeredPane.POPUP_LAYER);
+        Robot robot1 = new Robot(GameConstant.FOURTH_PLAYER,GameConstant.FOURTH_POSITION.changeToTrueLocation(),new Bomb(1,1));
+        robot1.init();
+        GameData.getMainFrame().getLayeredPane().add(robot1,JLayeredPane.POPUP_LAYER);
+        GameData.robots.add(robot1);
+
+        Robot robot2 = new Robot(GameConstant.FIRST_PLAYER,GameConstant.FIRST_POSITION.changeToTrueLocation(),new Bomb(1,1));
+        robot2.init();
+        GameData.getMainFrame().getLayeredPane().add(robot2,JLayeredPane.POPUP_LAYER);
+        GameData.robots.add(robot2);
 
         GameData.getMainFrame().init();
         GameData.getMainFrame().setVisible(true);

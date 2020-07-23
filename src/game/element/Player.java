@@ -50,6 +50,8 @@ public class Player extends JComponent {
     private ImageIcon currentImageIcon;
     private int whichPlayer;
     private boolean isPlayer1;
+
+
     private boolean isRobot;
     private Location virtualLocation;
     private Location lastLocation;
@@ -302,9 +304,13 @@ public class Player extends JComponent {
      */
     public synchronized void placeBomb() {
         if (GameData.getBoard().getSquare()[this.getVirtualLocation().getX()]
-                [this.getVirtualLocation().getY()].getElement() != null) {
+                [this.getVirtualLocation().getY()].getOrSetElement(true,null) != null) {
+            GameData.getBoard().getSquare()[this.getVirtualLocation().getX()]
+                    [this.getVirtualLocation().getY()].canSetElement = true;
             return;
         }
+        GameData.getBoard().getSquare()[this.getVirtualLocation().getX()]
+                [this.getVirtualLocation().getY()].canSetElement = true;
         boolean enoughBombs = false;
         int place = 0;
         for (int n = 0; n < this.getBombs().size(); n++) {
@@ -321,7 +327,7 @@ public class Player extends JComponent {
             this.getBombs().add(place, this.getBomb());
 
             GameData.getBombControlThreadPool().submit(new BombControlThread(this.getBomb(), this.virtualLocation, this));
-            GameData.getBoard().getSquare()[this.getVirtualLocation().getX()][this.getVirtualLocation().getY()].setElement(new Bomb(bomb.getRadius(),bomb.getDamage()));
+            GameData.getBoard().getSquare()[this.getVirtualLocation().getX()][this.getVirtualLocation().getY()].getOrSetElement(false,new Bomb(bomb.getRadius(),bomb.getDamage()));
             GameData.getMap()[this.getVirtualLocation().getX()][this.getVirtualLocation().getY()] = ElementType.BOMB_NUMBER;
         }
 
@@ -385,6 +391,11 @@ public class Player extends JComponent {
         MusicPlayer.Play(MusicPlayer.HURT);
         life--;
     }
+
+    public boolean isRobot() {
+        return isRobot;
+    }
+
 
     protected void setLastLocation(Location lastLocation) {
         this.lastLocation = lastLocation;

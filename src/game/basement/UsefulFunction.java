@@ -41,8 +41,11 @@ public class UsefulFunction {
             throw new IllegalArgumentException("error Location:UsefulFunction");
         }
 
-        GameData.getBoard().getSquare()[location.getX()][location.getY()].setElement(element);
+        GameData.getBoard().getSquare()[location.getX()][location.getY()].getOrSetElement(false, element);
         GameData.getMap()[location.getX()][location.getY()] =number;
+        if(GameData.getBoard().getSquare()[location.getX()][location.getY()].getItem()!=null){
+            GameData.getMap()[location.getX()][location.getY()] =ElementType.ITEM_NUMBER;
+        }
     }
     /**
      * 设定某个位置的玩家信息
@@ -63,7 +66,8 @@ public class UsefulFunction {
      */
     public static void removePlayer(@NotNull Player player, Location location){
         GameData.getBoard().getSquare()[location.getX()][location.getY()].removePlayer(player);
-        GameData.getMap()[location.getX()][location.getY()] = ElementType.NULL_NUMBER;
+        GameData.getMap()[location.getX()][location.getY()] = ElementType.changeEnumToNumber(
+                GameData.getBoard().getSquare()[location.getX()][location.getY()].getElementType());
     }
 
     /**

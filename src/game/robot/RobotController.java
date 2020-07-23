@@ -53,17 +53,17 @@ public class RobotController {
 
     private void update(){
         while (robot.getLife() != 0) {
-            if (robotLife != robot.getLife()) {
+            /*if (robotLife != robot.getLife()) {
                 if (robotLife > 2 && robot.getLife() <= 2) {
                     robotStateMachine.setCurrentState(RunState.getInstance());
                 } else if (robotLife <= 2 && robot.getLife() > 2) {
                     robotStateMachine.setCurrentState(NormalState.getInstance());
                 }
                 robotLife = robot.getLife();
-            }
+            }*/
             robotStateMachine.update();
             try {
-                Thread.sleep(20);
+                Thread.sleep(100);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

@@ -3,6 +3,7 @@ package game.statemachine.robot;
 import game.basement.Location;
 import game.robot.RobotAndLocation;
 import game.robot.RobotController;
+import game.robot.RobotPlaceBomb;
 import game.statemachine.StateBase;
 
 import java.util.*;
@@ -14,17 +15,14 @@ import java.util.*;
  */
 public class NormalState implements StateBase<RobotController> {
 
-    public static NormalState Instance;
-    private HashMap<Location,Integer> hashMap;
-    private Location lastLocation;
+    private Thread normalThread;
 
-    private NormalState(){}
+
+    private NormalState() {
+    }
 
     public static NormalState getInstance() {
-        if(Instance==null){
-            Instance = new NormalState();
-        }
-        return Instance;
+        return new NormalState();
     }
 
     @Override
@@ -34,16 +32,39 @@ public class NormalState implements StateBase<RobotController> {
 
     @Override
     public void enter(RobotController type) {
+        if (normalThread == null) {
+            normalThread = new Thread(() -> {
+                try {
+                    while (true) {
+                        type.getRobot().moveRobotToPosition(RobotAndLocation.update(type.getRobot().getVirtualLocation()));
+                        if(RobotPlaceBomb.placeBomb(type.getRobot().getVirtualLocation())){
+                            type.getRobot().placeBomb();
+                        }
+                        Thread.sleep(10);
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            });
+            normalThread.start();
+        } else {
+            if(!normalThread.isAlive()) {
+                normalThread.notify();
+            }
+        }
 
     }
 
     @Override
     public void execute(RobotController type) {
-        type.getRobot().moveRobotToPosition(RobotAndLocation.update(type.getRobot().getVirtualLocation()));
     }
 
     @Override
     public void exit(RobotController type) {
-
+        try {
+            normalThread.wait();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }

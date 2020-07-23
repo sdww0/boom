@@ -60,7 +60,7 @@ public class BombControlThread implements Runnable{
     }
 
     private void explode(){
-        GameData.getBoard().getSquare()[location.getX()][location.getY()].removeAllElement();
+        GameData.getBoard().getSquare()[location.getX()][location.getY()].getOrSetElement(false,null);
         player.getBombs().removeIf(bomb -> this.bomb == bomb);
         player.getBombs().add(null);
         /*
@@ -79,9 +79,8 @@ public class BombControlThread implements Runnable{
          */
         ElementType elementType = GameData.getBoard().getSquare()[location.getX()][location.getY() ].getElementType();
         GameData.getBoard().getSquare()[location.getX()][location.getY()].setItem(null);
-        if(elementType==ElementType.PLAYER){
-            GameData.getBoard().getSquare()[location.getX()][location.getY()].hurtPlayers();
-        }
+        GameData.getBoard().getSquare()[location.getX()][location.getY()].hurtPlayers();
+
 
         for (int n = 0; n < 4; n++) {
             for(int i = 0;i<bombSize;i++) {
@@ -157,8 +156,7 @@ public class BombControlThread implements Runnable{
             e.printStackTrace();
         }
         for (Location location1 : locations) {
-            GameData.getBoard().getSquare()[location1.getX()][location1.getY()].removeAllElement();
-
+            UsefulFunction.setElementType(null,location1);
         }
     }
 

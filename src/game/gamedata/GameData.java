@@ -2,11 +2,14 @@ package game.gamedata;
 
 import game.basement.Location;
 import game.element.Player;
+import game.element.Robot;
 import game.gui.Board;
 import game.gui.GameFrame;
 import game.gui.RightMenu;
 import game.map.MapList;
+import game.robot.RobotController;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -55,7 +58,9 @@ public class GameData {
      */
     public static Player player1 = null;
     public static Player player2 = null;
+    public static ArrayList<Robot> robots = new ArrayList<>();
     public static volatile HashSet<Location> bombExplodedLocation = new HashSet<>();
+
 
 
     public static int playersLife = 15;

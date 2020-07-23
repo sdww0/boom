@@ -25,6 +25,7 @@ public class Square extends JPanel {
      * 如有则为该玩家
      */
     private volatile LinkedList<Player> players;
+    public volatile boolean canSetElement;
 
     private Location squareLocation;
     private Color color;
@@ -36,6 +37,7 @@ public class Square extends JPanel {
         this.element = null;
         setLayout(new GridLayout(1, 1));
         setSize(GameConstant.SQUARE_SIZE,GameConstant.SQUARE_SIZE);
+        canSetElement = true;
     }
 
     @Override
@@ -55,13 +57,14 @@ public class Square extends JPanel {
      * @return 含有的元素类型
      */
     public ElementType getElementType(){
-        if(players.size()>0){
-            return ElementType.PLAYER;
-        }
+
         if(item!=null){
             return ElementType.ITEM;
         }
         if(this.element==null){
+            if(players.size()>0){
+                return ElementType.PLAYER;
+            }
             return ElementType.NULL;
         }
         String n = this.element.getClass().getName();
@@ -83,8 +86,27 @@ public class Square extends JPanel {
     }
 
     /**
+     * 防止多线程导致的数量不统一
+     * @param isGetElement 是否是获得元素如果是直接返回元素
+     * @param element 如果获得元素，传进来是null如果不是则设置
+     * @return 返回元素
+     */
+    public synchronized Object getOrSetElement(boolean isGetElement,Object element){
+
+        if(isGetElement){
+            return this.element;
+        }else{
+            setElement(element);
+            return null;
+        }
+    }
+
+
+    /**
+     * 不推荐使用，线程不安全
      * @return 含有的element
      */
+    @Deprecated
     public Object getElement(){
         return element;
     }
@@ -111,27 +133,26 @@ public class Square extends JPanel {
 
     }
 
+    @Deprecated
     public void removeAllElement(){
         if(this.element!=null){
             remove((JComponent)this.element);
             this.element = null;
             repaint();
-        }else{
-            return;
         }
     }
 
     /**
      *getter and setter
      */
-    public void setElement(Object element) {
+    @Deprecated
+    public synchronized void setElement(Object element) {
         removeAllElement();
         this.element = element;
         if(element==null){
-            repaint();
             return;
         }
-        add((Component) element);
+        add((JComponent) element);
         repaint();
     }
 

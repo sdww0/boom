@@ -5,7 +5,6 @@ import game.basement.TrueLocation;
 import game.basement.UsefulFunction;
 import game.gamedata.GameConstant;
 import game.gamedata.GameData;
-import game.gamedata.Judge;
 import game.image.ImageReader;
 import game.music.MusicPlayer;
 import game.thread.BombControlThread;
@@ -227,7 +226,7 @@ public class Player extends JComponent {
         if (GameData.getBoard().getSquare()[location.getX()][location.getY()].getItem() == null) {
             return;
         }
-        MusicPlayer.Play(MusicPlayer.PICKUP);
+        MusicPlayer.playShortMusic(MusicPlayer.PICKUP);
         if(GameData.getBoard().getSquare()[location.getX()][location.getY()].getItem()!=null&&
                 GameData.getBoard().getSquare()[location.getX()][location.getY()].getItem().getType()==1){
             bombs.add(null);
@@ -255,6 +254,8 @@ public class Player extends JComponent {
         int xChange = 0, yChange = 0;
         /*
         根据keyCode移动位置
+        maxAccess表示模糊处理程度
+        不能太精准，要不然有时候看着以为可以过去结果实际不行
          */
         if (keyCode == KeyEvent.VK_W || keyCode == KeyEvent.VK_UP) {
             yChange = -1*this.getSpeed() ;
@@ -322,7 +323,7 @@ public class Player extends JComponent {
         }
 
         if (enoughBombs) {
-            MusicPlayer.Play(MusicPlayer.PLACE);
+            MusicPlayer.playShortMusic(MusicPlayer.PLACE);
                                 this.getBombs().remove(place);
             this.getBombs().add(place, this.getBomb());
 
@@ -388,7 +389,7 @@ public class Player extends JComponent {
     }
 
     public void hurt(){
-        MusicPlayer.Play(MusicPlayer.HURT);
+        MusicPlayer.playShortMusic(MusicPlayer.HURT);
         life--;
     }
 

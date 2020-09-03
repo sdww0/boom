@@ -5,6 +5,7 @@ import sun.audio.AudioStream;
 
 import javax.sound.sampled.*;
 import java.io.IOException;
+import java.net.URL;
 
 /**
  * 播放音乐
@@ -15,76 +16,70 @@ public class MusicPlayer {
     final static public int PLACE = 2;
     final static public int PICKUP = 3;
     final static public int HURT = 4;
+    final static private URL[] SHORT_MUSIC_URL = {
+            MusicPlayer.class.getResource("/game/music/Boom.wav"),
+            MusicPlayer.class.getResource("/game/music/Place.wav"),
+            MusicPlayer.class.getResource("/game/music/PickUp.wav"),
+            MusicPlayer.class.getResource("/game/music/Hurt.wav")
+    };
+    /**
+     * 开始菜单游戏背景音乐
+     * 玩游戏的时候背景音乐
+     */
+    final static public int START_MENU_BACK_GROUND_MUSIC = 1;
+    final static public int PLAYING_BACK_GROUND_MUSIC = 2;
+    final static private URL[] BACKGROUND_MUSIC_URL = {
+            MusicPlayer.class.getResource("/game/music/BackGroundMusic.wav"),
+            MusicPlayer.class.getResource("/game/music/GameBackGroundMusic.wav")
+    };
 
+    private static ShortMusic totalShortMusic;
 
-    private static Clip BackGroundMusic;
-    private static FloatControl gainControl;
-    private static float volume;
+    private static BackGroundMusic backGroundMusic;
+
 
     public static void init() {
-        AudioInputStream audioInput = null;
-        volume = 0.0f;
-        try {
-
-            audioInput = AudioSystem.getAudioInputStream(MusicPlayer.class.getResource("/game/music/BackGroundMusic.wav"));
-            BackGroundMusic = AudioSystem.getClip();
-            BackGroundMusic.open(audioInput);
-            BackGroundMusic.stop();
-            gainControl = (FloatControl) BackGroundMusic.getControl(FloatControl.Type.MASTER_GAIN);
-        } catch (UnsupportedAudioFileException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (LineUnavailableException e) {
-            e.printStackTrace();
-        }
+        backGroundMusic = new BackGroundMusic(BACKGROUND_MUSIC_URL);
+        totalShortMusic = new ShortMusic(SHORT_MUSIC_URL);
     }
 
-    public static void Play(int wave) {
-        String waveName = "";
-
-        switch (wave) {
-            case BOOM:
-                waveName = "Boom.wav";
-                break;
-            case PLACE:
-                waveName = "Place.wav";
-                break;
-            case PICKUP:
-                waveName = "PickUp.wav";
-                break;
-            case HURT:
-                waveName = "Hurt.wav";
-                break;
-            default:
-                break;
-        }
-
-        try {
-            AudioStream as = new AudioStream(MusicPlayer.class.getResourceAsStream("/game/music/"+waveName));
-            AudioPlayer.player.start(as);
-        } catch (Exception ignore) {
-
-        }
-
+    public static void playBackGroundMusic(int n) {
+        backGroundMusic.canPlay = true;
+        backGroundMusic.play(n);
     }
 
-    public static void playBackGroundMusic() {
-        BackGroundMusic.start();
-        BackGroundMusic.loop(Clip.LOOP_CONTINUOUSLY);
+    public static void stopBackGroundMusic(int n) {
+        backGroundMusic.canPlay = false;
+        backGroundMusic.stop(n);
     }
 
-    public static void stopBackGroundMusic() {
-        BackGroundMusic.stop();
+    public static void lowerBackGroundMusicVolume(){
+        backGroundMusic.lowerVolume();
     }
 
-    public static void lowerVolume(){
-        gainControl.setValue(volume-=5.0f);
+    public static void higherBackGroundMusicVolume(){
+        backGroundMusic.higherVolume();
     }
 
-    public static void higherVolume(){
-        if(volume-5.0f<=0.01f)return;
-        gainControl.setValue(volume+=5.0f);
+    public static void playShortMusic() {
+        totalShortMusic.canPlay = true;
     }
+
+    public static void stopShortMusic() {
+        totalShortMusic.canPlay = false;
+    }
+
+    public static void lowerShortMusicVolume(){
+        totalShortMusic.lowerVolume();
+    }
+
+    public static void higherShortMusicVolume(){
+        totalShortMusic.higherVolume();
+    }
+
+    public static void playShortMusic(int n){
+        totalShortMusic.play(n);
+    }
+
 
 }

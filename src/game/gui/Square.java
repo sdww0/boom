@@ -12,6 +12,8 @@ import java.util.LinkedList;
 
 /**
  * swing面板上组成原件
+ * 写的有点乱，可以修改一下。。
+ * （偷懒不想改了）
  * @author njdnhh
  */
 public class Square extends JPanel {

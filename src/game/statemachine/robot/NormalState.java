@@ -35,7 +35,7 @@ public class NormalState implements StateBase<RobotController> {
         if (normalThread == null) {
             normalThread = new Thread(() -> {
                 try {
-                    while (true) {
+                    while (type.getRobot().getLife()>0) {
                         type.getRobot().moveRobotToPosition(RobotAndLocation.update(type.getRobot().getVirtualLocation()));
                         if(RobotPlaceBomb.placeBomb(type.getRobot().getVirtualLocation())){
                             type.getRobot().placeBomb();

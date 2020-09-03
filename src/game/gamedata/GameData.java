@@ -43,7 +43,13 @@ public class GameData {
      * 5代表爆炸效果
      */
     private volatile static int[][] map ;
-
+    /**
+     * 游戏面板
+     * 游戏右侧菜单栏
+     * 游戏框架
+     * 控制炸弹爆炸线程池
+     * 执行游戏线程池
+     */
     private volatile static Board board = null;
     private static RightMenu rightMenu = null;
     private static GameFrame mainFrame = null;
@@ -55,6 +61,8 @@ public class GameData {
     /**
      * 一号玩家
      * 二号玩家（如果无二号玩家则设置成null)
+     * 机器人列表
+     * 炸弹爆炸的哈系表
      */
     public static Player player1 = null;
     public static Player player2 = null;
@@ -63,7 +71,7 @@ public class GameData {
 
 
 
-    public static int playersLife = 15;
+    public static int playersLife = 5;
     public static int playersDefaultSpeed = 1;
 
     public static int[][] getMap() {

@@ -1,9 +1,11 @@
 package game.basement;
 
-import game.element.*;
-import game.gamedata.GameData;
+import game.element.ElementType;
+import game.element.Item;
+import game.element.Player;
+import game.element.Walls;
 import game.gamedata.GameConstant;
-import org.jetbrains.annotations.NotNull;
+import game.gamedata.GameData;
 
 /**
  * 比较有用的函数
@@ -53,7 +55,7 @@ public class UsefulFunction {
      * @param player 玩家
      * @param location 设定元素所在位置
      */
-    public static void setPlayer(@NotNull Player player, Location location){
+    public static void setPlayer( Player player, Location location){
             GameData.getBoard().getSquare()[location.getX()][location.getY()].setPlayer(player);
             GameData.getMap()[location.getX()][location.getY()] = ElementType.PLAYER_NUMBER;
     }
@@ -64,7 +66,7 @@ public class UsefulFunction {
      * @param player 玩家
      * @param location 设定元素所在位置
      */
-    public static void removePlayer(@NotNull Player player, Location location){
+    public static void removePlayer(Player player, Location location){
         GameData.getBoard().getSquare()[location.getX()][location.getY()].removePlayer(player);
         GameData.getMap()[location.getX()][location.getY()] = ElementType.changeEnumToNumber(
                 GameData.getBoard().getSquare()[location.getX()][location.getY()].getElementType());

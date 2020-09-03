@@ -227,6 +227,12 @@ public class RobotAndLocation {
         return findMaxDistance(locations, values, location);
     }
 
+    /**
+     * 计算位置的估值
+     * @param direction 方向
+     * @param location 位置
+     * @return 估值
+     */
     private static Integer valueOfLocation(int direction, Location location) {
         int value = 0;
         int xChange = 0, yChange = 0;
@@ -267,6 +273,12 @@ public class RobotAndLocation {
         }
     }
 
+    /**
+     * 获取目标方向的估值
+     * @param direction 方向
+     * @param location 位置
+     * @return 估值
+     */
     private static Integer getValueOfDirection(int direction, Location location) {
         int x = location.getX();
         int y = location.getY();
@@ -314,7 +326,9 @@ public class RobotAndLocation {
             } else if (GameData.getMap()[x][y] == ElementType.ITEM_NUMBER) {
                 value += ITEM_VALUE;
             } else if (GameData.getMap()[x][y] == ElementType.BOMB_NUMBER) {
-
+                /*
+                如果是炸弹则原路返回
+                 */
                 Object bomb =  GameData.getBoard().getSquare()[x][y].getOrSetElement(true,null);
                 int bombSize = 0;
                 if (bomb!=null&&bomb.getClass().getName().equals(GameConstant.BOMB_FILE_LOCATION)) {
@@ -352,6 +366,13 @@ public class RobotAndLocation {
 
     }
 
+    /**
+     * 寻找最远的路
+     * @param locations 位置list
+     * @param values 估值list
+     * @param currentLocation 当前位置
+     * @return 目标位置
+     */
     private static Location findMaxDistance(LinkedList<Location> locations, LinkedList<Integer> values, Location currentLocation) {
         int max = Integer.MIN_VALUE;
         for (int n : values) {
@@ -402,6 +423,12 @@ public class RobotAndLocation {
 
     }
 
+    /**
+     * 没有任何地方走
+     * @param notLocate 不能走的地方
+     * @param currentLocation 目前位置
+     * @return 目标为至
+     */
     private static Location noPlaceToGoSituation(HashSet<Location> notLocate, Location currentLocation) {
         int[] values = new int[notLocate.size()];
         int n = 0;

@@ -70,7 +70,6 @@ class ControlRunnable implements Runnable{
                     }
                 }
 
-
                 GameData.getBoard().getSquare()[player.getVirtualLocation().getX()]
                         [player.getVirtualLocation().getY()].removePlayer(player);
                 GameData.getMainFrame().getLayeredPane().remove(player);

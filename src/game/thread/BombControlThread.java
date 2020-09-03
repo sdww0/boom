@@ -12,7 +12,14 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 
 /**
- * 控制炸弹爆炸runnable
+ * 控制炸弹爆炸
+ * 分别对自身位置，上下左右四个方向按照
+ * radius进行拓展分析是否有对应元素并进行相应操作
+ * 玩家则扣血
+ * 墙壁或者超出范围则停止
+ * 有道具则删除道具
+ * 能破坏的墙壁则破坏并随机生成道具
+ * 没东西则进入下一次判断
  *
  * @author njdnhh
  */
@@ -73,7 +80,7 @@ public class BombControlThread implements Runnable{
         ArrayList<Location> locations = new ArrayList<>();
         locations.add(location);
         UsefulFunction.setElementType(Boom.getOne(),new Location(location.getX(),location.getY()));
-        MusicPlayer.Play(MusicPlayer.BOOM);
+        MusicPlayer.playShortMusic(MusicPlayer.BOOM);
         /*
          *对于炸弹所在位置进行前置处理
          */
@@ -116,7 +123,12 @@ public class BombControlThread implements Runnable{
                 GameData.getBoard().getSquare()[location.getX() + xChange][location.getY() + yChange].setItem(null);
 
                 boolean canBreak = true;
-
+                /*
+                    选择元素
+                    如果是炸弹则添加进炸弹列表
+                    如果是玩家则扣血
+                    如果是可破坏的墙壁则破坏并生成道具
+                 */
                 switch(elementType){
                     case BOMB:
                         GameData.bombExplodedLocation.add(new Location(location.getX() + xChange, location.getY() + yChange));

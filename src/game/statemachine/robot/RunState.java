@@ -9,6 +9,7 @@ import java.util.LinkedList;
 
 /**
  * 逃跑状态
+ * 暂未启用
  * @author njdnhh
  */
 public class RunState implements StateBase<RobotController> {

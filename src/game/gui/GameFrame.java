@@ -37,10 +37,10 @@ public class GameFrame extends JFrame {
         MenuItem stop = new MenuItem("stop");
         MenuItem lower = new MenuItem("lower Volume ");
         MenuItem higher = new MenuItem("higher Volume ");
-        lower.addActionListener(e -> MusicPlayer.lowerVolume());
-        higher.addActionListener(e -> MusicPlayer.higherVolume());
-        start.addActionListener(e -> MusicPlayer.playBackGroundMusic());
-        stop.addActionListener(e -> MusicPlayer.stopBackGroundMusic());
+        lower.addActionListener(e -> MusicPlayer.lowerBackGroundMusicVolume());
+        higher.addActionListener(e -> MusicPlayer.higherBackGroundMusicVolume());
+        start.addActionListener(e -> MusicPlayer.playBackGroundMusic(MusicPlayer.PLAYING_BACK_GROUND_MUSIC));
+        stop.addActionListener(e -> MusicPlayer.stopBackGroundMusic(MusicPlayer.PLAYING_BACK_GROUND_MUSIC));
         menuBar.add(menu);
         menu.add(music);
         music.add(start);

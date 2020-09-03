@@ -49,21 +49,23 @@ public enum ElementType {
         }
     }
     /**
-     * 将数值转化为Enum
+     * 将Enum转化为数值
      * @param elementType Enum
      * @return 数值
      */
     public static int changeEnumToNumber(ElementType elementType){
-        switch (elementType){
-            case NULL:return NULL_NUMBER;
-            case BREAKABLE_WALL:return  BREAKABLE_WALL_NUMBER;
-            case UNBREAKABLE_WALL:return UNBREAKABLE_WALL_NUMBER;
-            case BOMB:return BOMB_NUMBER;
-            case PLAYER:return PLAYER_NUMBER;
-            case BOOM:return BOOM_NUMBER;
-            case ITEM:return ITEM_NUMBER;
-            default:throw new IllegalArgumentException("wrong number location:ElementType");
-        }
+        return elementType.ordinal();
+//        elementType.ordinal();
+//        switch (elementType){
+//            case NULL:return NULL_NUMBER;
+//            case BREAKABLE_WALL:return  BREAKABLE_WALL_NUMBER;
+//            case UNBREAKABLE_WALL:return UNBREAKABLE_WALL_NUMBER;
+//            case BOMB:return BOMB_NUMBER;
+//            case PLAYER:return PLAYER_NUMBER;
+//            case BOOM:return BOOM_NUMBER;
+//            case ITEM:return ITEM_NUMBER;
+//            default:throw new IllegalArgumentException("wrong number location:ElementType");
+//        }
     }
 
 

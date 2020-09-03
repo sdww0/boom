@@ -23,12 +23,12 @@ import java.awt.*;
  */
 public class Main {
 
-
     public static void main(String[] args){
         initGame();
     }
 
     public static void initGame(){
+
         GameData.init();
         MusicPlayer.init();
 
@@ -56,10 +56,4 @@ public class Main {
         GameData.getMainFrame().init();
         GameData.getMainFrame().setVisible(true);
     }
-
-
-
-
-
-
 }

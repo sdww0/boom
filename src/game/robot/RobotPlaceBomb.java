@@ -15,7 +15,6 @@ import static game.basement.Location.RIGHT;
 
 /**
  * 机器人放置炸弹类
- * 暂时废弃
  * @author njdnhh
  */
 public class RobotPlaceBomb {

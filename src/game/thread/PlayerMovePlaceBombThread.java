@@ -2,6 +2,10 @@ package game.thread;
 
 import game.gamedata.GameData;
 
+/**
+ * 每隔一段时间从一个哈系表中获取是否有传进来的keyCode，有的话进行相应操作
+ * @author njdnhh
+ */
 public class PlayerMovePlaceBombThread extends Thread{
 
     public PlayerMovePlaceBombThread(int keyCode,boolean isPlayer1){
